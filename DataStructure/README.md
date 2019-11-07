@@ -1,33 +1,33 @@
 # Part 1-2 DataStructure
 
-* [Array vs LinkedList](#array-vs-linkedlist)
-* [Stack and Queue](#stack-and-queue)
-* [Tree](#tree)
-  * Binary Tree
-  * Full Binary Tree
-  * Complete Binary Tree
-  * BST(Binary Search Tree)
-* [Binary Heap](#binary-heap)
-* [Red Black Tree](#red-black-tree)
-  * 정의
-  * 특징
-  * 삽입
-  * 삭제
-* [HashTable](#hashtable)
-  * hash function
-  * Resolve Collision
-    * Open Addressing
-    * Separate Chaining
-  * Resize
-* [Graph](#graph)
-  * Graph 용어정리
-  * Graph 구현
-  * Graph 탐색
-  * Minimum Spanning Tree
-    * Kruskal algorithm
-    * Prim algorithm
+- [Array vs LinkedList](#array-vs-linkedlist)
+- [Stack and Queue](#stack-and-queue)
+- [Tree](#tree)
+  - Binary Tree
+  - Full Binary Tree
+  - Complete Binary Tree
+  - BST(Binary Search Tree)
+- [Binary Heap](#binary-heap)
+- [Red Black Tree](#red-black-tree)
+  - 정의
+  - 특징
+  - 삽입
+  - 삭제
+- [HashTable](#hashtable)
+  - hash function
+  - Resolve Collision
+    - Open Addressing
+    - Separate Chaining
+  - Resize
+- [Graph](#graph)
+  - Graph 용어정리
+  - Graph 구현
+  - Graph 탐색
+  - Minimum Spanning Tree
+    - Kruskal algorithm
+    - Prim algorithm
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)
 
 </br>
 
@@ -35,26 +35,27 @@
 
 ### Array
 
-가장 기본적인 자료구조인 `Array` 자료구조는, 논리적 저장 순서와 물리적 저장 순서가 일치한다. 따라서 `인덱스`(index)로 해당 원소(element)에 접근할 수 있다. 그렇기 때문에 찾고자 하는 원소의 인덱스 값을 알고 있으면 `Big-O(1)`에 해당 원소로 접근할 수 있다. 즉 **random access** 가 가능하다는 장점이 있는 것이다.
+가장 기본적인 자료구조인 `Array` 자료구조는, 논리적 저장 순서와 물리적 저장 순서가 일치합니다. 따라서 `인덱스`(index)로 해당 원소(element)에 접근할 수 있다. 그렇기 때문에 찾고자 하는 원소의 인덱스 값을 알고 있으면 `Big-O(1)`에 해당 원소로 접근할 수 있습니다. 즉 **random access** 가 가능하다는 장점이 있는 것입니다.
 
-하지만 삭제 또는 삽입의 과정에서는 해당 원소에 접근하여 작업을 완료한 뒤(O(1)), 또 한 가지의 작업을 추가적으로 해줘야 하기 때문에, 시간이 더 걸린다. 만약 배열의 원소 중 어느 원소를 삭제했다고 했을 때, 배열의 연속적인 특징이 깨지게 된다. 즉 빈 공간이 생기는 것이다. 따라서 삭제한 원소보다 큰 인덱스를 갖는 원소들을 `shift`해줘야 하는 비용(cost)이 발생하고 이 경우의 시간 복잡도는 O(n)가 된다. 그렇기 때문에 Array 자료구조에서 삭제 기능에 대한 time complexity 의 worst case 는 O(n)이 된다.
-
-삽입의 경우도 마찬가지이다. 만약 첫번째 자리에 새로운 원소를 추가하고자 한다면 모든 원소들의 인덱스를 1 씩 shift 해줘야 하므로 이 경우도 O(n)의 시간을 요구하게 된다.
+하지만 삭제 또는 삽입의 과정에서는 해당 원소에 접근하여 작업을 완료한 뒤(`O(1)`), 삭제한 원소보다 큰 인덱스를 갖는 원소들을 `shift`해줘야 하는 비용(cost)이 발생하고 이 경우 최악의 시간 복잡도는 O(n)가 됩니다.
 
 ### LinkedList
 
-이 부분에 대한 문제점을 해결하기 위한 자료구조가 linked list 이다. 각각의 원소들은 자기 자신 다음에 어떤 원소인지만을 기억하고 있다. 따라서 이 부분만 다른 값으로 바꿔주면 삭제와 삽입을 O(1) 만에 해결할 수 있는 것이다.
+LinkedList의 각 노드는 자신과 연결된 노드의 주소와 값을 저장하고 있습니다. 따라서 삽입(삭제) 시에는 노드를 생성(삭제)하고 연결(연결해제)만 해주면 되기 때문에 시간복잡도는 `Big-O(1)`이 됩니다.
 
-하지만 LinkedList 역시 한 가지 문제가 있다. 원하는 위치에 삽입을 하고자 하면 원하는 위치를 Search 과정에 있어서 첫번째 원소부터 다 확인해봐야 한다는 것이다. Array 와는 달리 논리적 저장 순서와 물리적 저장 순서가 일치하지 않기 때문이다. 이것은 일단 삽입하고 정렬하는 것과 마찬가지이다. 이 과정 때문에, 어떠한 원소를 삭제 또는 추가하고자 했을 때, 그 원소를 찾기 위해서 O(n)의 시간이 추가적으로 발생하게 된다.
+하지만 LinkedList 역시 한 가지 문제가 있습니다. LinkedList에는 인덱스가 존재하지 않기 때문에, Search의 시간복잡도는 `O(n)`입니다. 삽입과 삭제를 하기 위해서는 해당 노드를 Search 하는 연산이 추가적으로 발생하기 때문에 삽입과 삭제의 최종 시간복잡도는 `O(n)`이라고 할 수 있습니다.
 
-결국 linked list 자료구조는 search 에도 O(n)의 time complexity 를 갖고, 삽입, 삭제에 대해서도 O(n)의 time complexity 를 갖는다. 그렇다고 해서 아주 쓸모없는 자료구조는 아니기에, 우리가 학습하는 것이다. 이 Linked List 는 Tree 구조의 근간이 되는 자료구조이며, Tree 에서 사용되었을 때 그 유용성이 드러난다.
+결국 linked list 자료구조는 search 에도 O(n)의 time complexity 를 갖고, 삽입, 삭제에 대해서도 O(n)의 time complexity 를 갖게 됩니다. Linked List는 Tree 구조의 근간이 되는 자료구조이며, Tree 에서 사용되었을 때 진가를 발휘할 수 있습니다.
+
+추가적으로 List의 장점을 꼽자면 Array는 생성과 동시에 크기를 지정해줘야 하지만, List는 배열의 크기가 동적으로 변할 수 있습니다.
 
 #### Personal Recommendation
 
-* Array 를 기반으로한 LinkedList 구현
-* ArrayList 를 기반으로한 LinkedList 구현
+- [LinkedList 구현하기](./LinkedList.py)
+- [주어진 배열을 k 만큼 Shift 하는 알고리즘 만들기](./Shift-k.py)
+- sum(i\*arr[i])의 값이 최대가 되도록 만들기
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-1-2-datastructure)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-1-2-datastructure)
 
 ---
 
@@ -64,20 +65,21 @@
 
 ### Stack
 
-선형 자료구조의 일종으로 `Last In First Out (LIFO)`. 즉, 나중에 들어간 원소가 먼저 나온다. 이것은 Stack 의 가장 큰 특징이다. 차곡차곡 쌓이는 구조로 먼저 Stack 에 들어가게 된 원소는 맨 바닥에 깔리게 된다. 그렇기 때문에 늦게 들어간 녀석들은 그 위에 쌓이게 되고 호출 시 가장 위에 있는 녀석이 호출되는 구조이다.
+선형 자료구조의 일종으로 `Last In First Out (LIFO)`. 즉, 나중에 들어간 원소가 먼저 나오는 특징이 있습니다. Stack의 사용 예시로는 `DFS(깊이 우선 탐색)`, `후위 연산`, `괄호 유효성 검사` 등이 있습니다.
 
 ### Queue
 
-선형 자료구조의 일종으로 `First In First Out (FIFO)`. 즉, 먼저 들어간 놈이 먼저 나온다. Stack 과는 반대로 먼저 들어간 놈이 맨 앞에서 대기하고 있다가 먼저 나오게 되는 구조이다. 참고로 Java Collection 에서 Queue 는 인터페이스이다. 이를 구현하고 있는 `Priority queue`등을 사용할 수 있다.
+선형 자료구조의 일종으로 `First In First Out (FIFO)`. 즉, 들어온 원소 순서대로 나오는 특징이 있습니다. 참고로 Java Collection 에서 Queue 는 인터페이스입니다. 따라서 queue를 사용하려면, 이를 구현하고 있는 `Priority queue`등을 사용해야 합니다. queue의 사용 예시로는 `BFS(너비 우선 탐색)` 등이 있습니다.
 
 #### Personal Recommendation
 
-* Stack 을 사용하여 미로찾기 구현하기
-* Queue 를 사용하여 Heap 자료구조 구현하기
-* Stack 두 개로 Queue 자료구조 구현하기
-* Stack 으로 괄호 유효성 체크 코드 구현하기
+- [Stack을 Array, List, LinkedList로 구현하고 각각의 차이점 파악하기.](./Stack.py)
+- [Stack 을 사용하여 미로찾기 구현하기(DFS를 iterative 또는 recursive)](./maze.py)
+- [Queue를 Array, List, LinkedList로 구현하고 각각의 차이점 파악하기.](./Queue.py)
+- [Stack 두 개로 Queue 자료구조 구현하기](./stack_to_queue.py)
+- [Stack 으로 괄호 유효성 체크 코드 구현하기](./괄호유효성.py)
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-1-2-datastructure)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-1-2-datastructure)
 
 ---
 
@@ -85,79 +87,99 @@
 
 ## Tree
 
-트리는 스택이나 큐와 같은 선형 구조가 아닌 비선형 자료구조이다. 트리는 계층적 관계(Hierarchical Relationship)을 표현하는 자료구조이다. 이 `트리`라는 자료구조는 표현에 집중한다. 무엇인가를 저장하고 꺼내야 한다는 사고에서 벗어나 트리라는 자료구조를 바라보자.
+트리의 정의는 사이클이 없는 연결 그래프입니다.
+
+사이클은 '경로'에서 한 노드가 두 번이상 포함되는 것을 의미합니다. 연결 그래프란 모든 노드들이 '연결' 되어있다는 뜻이며, '연결'되었다는 의미는 모든 노드 사이에 '경로'가 존재함을 의미합니다.
 
 #### 트리를 구성하고 있는 구성요소들(용어)
 
-* Node (노드) : 트리를 구성하고 있는 각각의 요소를 의미한다.
-* Edge (간선) : 트리를 구성하기 위해 노드와 노드를 연결하는 선을 의미한다.
-* Root Node (루트 노드) : 트리 구조에서 최상위에 있는 노드를 의미한다.
-* Terminal Node ( = leaf Node, 단말 노드) : 하위에 다른 노드가 연결되어 있지 않은 노드를 의미한다.
-* Internal Node (내부노드, 비단말 노드) : 단말 노드를 제외한 모든 노드로 루트 노드를 포함한다.
+- Node (노드) : 트리를 구성하고 있는 각각의 요소를 의미한다.
+- Edge (간선) : 트리를 구성하기 위해 노드와 노드를 연결하는 선을 의미한다.
+- Root Node (루트 노드) : 트리 구조에서 최상위에 있는 노드를 의미한다.
+- Terminal Node ( = leaf Node, 단말 노드) : 하위에 다른 노드가 연결되어 있지 않은 노드를 의미한다.
+- Internal Node (내부노드, 비단말 노드) : 단말 노드를 제외한 모든 노드로 루트 노드를 포함한다.
 
 </br>
 
 ### Binary Tree (이진 트리)
 
-루트 노드를 중심으로 두 개의 서브 트리(큰 트리에 속하는 작은 트리)로 나뉘어 진다. 또한 나뉘어진 두 서브 트리도 모두 이진 트리어야 한다. 재귀적인 정의라 맞는듯 하면서도 이해가 쉽지 않을 듯하다. 한 가지 덧붙이자면 공집합도 이진 트리로 포함시켜야 한다. 그래야 재귀적으로 조건을 확인해갔을 때, leaf node 에 다 달았을 때, 정의가 만족되기 때문이다. 자연스럽게 노드가 하나 뿐인 것도 이진 트리 정의에 만족하게 된다.
+루트 노드는 최대 두 개의 서브 트리를 가지며, 각각의 서브 트리 또한 모두 이진 트리이면 됩니다. 한 가지 덧붙이자면 공집합도 이진 트리로 포함합니다.
+
+루트 노드를 정의했기 때문에, 루트 노드부터 각 노드는 자식노드를 최대 2개만 갖는 트리를 이진 트리로 정의하여도 큰 문제는 없어보입니다.
 
 트리에서는 각 `층별로` 숫자를 매겨서 이를 트리의 `Level(레벨)`이라고 한다. 레벨의 값은 0 부터 시작하고 따라서 루트 노트의 레벨은 0 이다. 그리고 트리의 최고 레벨을 가리켜 해당 트리의 `height(높이)`라고 한다.
 
 #### Full Binary Tree (포화 이진 트리), Complete Binary Tree (완전 이진 트리)
 
-모든 레벨이 꽉 찬 이진 트리를 가리켜 포화 이진 트리라고 한다. 위에서 아래로, 왼쪽에서 오른쪽으로 순서대로 차곡차곡 채워진 이진 트리를 가리켜 완전 이진 트리라고 한다. 배열로 구성된 `Full Binary Tree`와 `Complete binary tree`는 노드의 개수가 n 개 일 때, i 번째 노드에 대해서 parent(i) = i/2 , left_child(i) = 2i , right_child(i) = 2i + 1 의 index 값을 갖는다.
+모든 레벨이 꽉 찬 이진 트리를 가리켜 포화 이진 트리라고 합니다.
+
+각 레벨에서 왼쪽에서 오른쪽의 노드가 빈틈없이 채워져 있는 것을 완전 이진트리라고 합니다.
+
+완전 이진트리는 배열로 구현하는 것이 가장 좋습니다. 그 이유를 보면,
+
+노드의 개수가 n개 일 때, i 번째 노드에 대해서 parent(i) = i/2 , left_child(i) = 2i , right_child(i) = 2i + 1 의 index 값을 갖기 때문입니다.
 
 </br>
 
 ### BST(Binary Search Tree)
 
-효율적인 탐색을 위해서는 어떻게 찾을까만 고민해서는 안된다. 그보다는 효율적인 탐색을 위한 저장방법이 무엇일까를 고민해야 한다. 이진 탐색 트리는 이진 트리의 일종이다. 단 이진 탐색 트리에는 데이터를 저장하는 규칙이 있다. 그리고 그 규칙은 특정 데이터의 위치를 찾는데 사용할 수 있다.
+`이진 탐색 트리`는 `이진 트리`의 일종이나 `Search`에 최적화된 트리입니다. `BST`는 다음과 같은 규칙들을 만족하도록 저장합니다.
 
-* 규칙 1. 이진 탐색 트리의 노드에 저장된 키는 유일하다.
-* 규칙 2. 루트 노드의 키가 왼쪽 서브 트리를 구성하는 어떠한 노드의 키보다 크다.
-* 규칙 3. 루트 노드의 키가 오른쪽 서브 트리를 구성하는 어떠한 노드의 키보다 작다.
-* 규칙 4. 왼쪽과 오른쪽 서브트리도 이진 탐색 트리이다.
+- 규칙 1. 이진 탐색 트리의 노드에 저장된 키는 유일하다.
+- 규칙 2. 루트 노드의 키 > 왼쪽 서브트리의 최댓값
+- 규칙 3. 루트 노드의 키 < 오른쪽 서브트리의 최솟값
+- 규칙 4. 왼쪽과 오른쪽 서브트리도 이진 탐색 트리이다.
 
-이진 탐색 트리의 탐색 연산은 O(log n)의 시간 복잡도를 갖는다. 사실 정확히 말하면 O(h)라고 표현하는 것이 맞다. 트리의 높이를 하나씩 더해갈수록 추가할 수 있는 노드의 수가 두 배씩 증가하기 때문이다. 하지만 이러한 이진 탐색 트리는 Skewed Tree(편향 트리)가 될 수 있다. 저장 순서에 따라 계속 한 쪽으로만 노드가 추가되는 경우가 발생하기 때문이다. 이럴 경우 성능에 영향을 미치게 되며, 탐색의 Worst Case 가 되고 시간 복잡도는 O(n)이 된다.
+`Search`에 대한 평균 시간복잡도는 `O(logn)` 가 됩니다. 하지만 최악의 경우, 편향 이진트리로 생성되었을 때 시간 복잡도는 `O(n)`이 될 수 있습니다.
 
-배열보다 많은 메모리를 사용하며 데이터를 저장했지만 탐색에 필요한 시간 복잡도가 같게 되는 비효율적인 상황이 발생한다. 이를 해결하기 위해 `Rebalancing` 기법이 등장하였다. 균형을 잡기 위한 트리 구조의 재조정을 `Rebalancing`이라 한다. 이 기법을 구현한 트리에는 여러 종류가 존재하는데 그 중에서 하나가 뒤에서 살펴볼 `Red-Black Tree`이다.
+`Insert` `Delete` 연산 또한 Search에 기반하기 때문에 시간복잡도는 동일하게 `O(logn)`이나 최악의 경우에는 `O(n)`이 됩니다.
+
+이를 해결하기 위해 `Rebalancing` 기법이 등장하였습니다. `Rebalancing`은 트리의 높이를 조정하는 기법으로, 이를 구현한 트리는 여러 종류가 존재하지만 그 중에서 하나가 뒤에서 살펴볼 `AVL Tree`, `Red-Black Tree`입니다.
 
 #### Personal Recommendation
 
-* Binary Search Tree 구현하기
-* 주어진 트리가 Binary 트리인지 확인하는 알고리즘 구현하기
+- [Tree는 어떻게 구현하는 것이 좋을까? (인접행렬 vs 연결리스트)](./Tree.py)
+- [Binary Tree의 3가지 순회 방법 구현하기](./트리의순회.py)
+- [주어진 트리가 Binary 트리인지 확인하는 알고리즘 구현하기](./check_binary.py)
+- [Binary Search Tree 구현하기](./BST.py)
+- 주어진 트리가 Binary Search Tree인지 확인하는 알고리즘 구현하기
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-1-2-datastructure)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-1-2-datastructure)
 
 </br>
 
 ## Binary Heap
 
-자료구조의 일종으로 Tree 의 형식을 하고 있으며, Tree 중에서도 배열에 기반한 `Complete Binary Tree`이다. 배열에 트리의 값들을 넣어줄 때, 0 번째는 건너뛰고 1 번 index 부터 루트노드가 시작된다. 이는 노드의 고유번호 값과 배열의 index 를 일치시켜 혼동을 줄이기 위함이다. `힙(Heap)`에는 `최대힙(max heap)`, `최소힙(min heap)` 두 종류가 있다.
+Heap이란 `Complete Binary Tree` 중 일부 조건을 만족하는 Tree 입니다. `힙(Heap)`에는 `최대힙(max heap)`, `최소힙(min heap)` 두 종류가 있습니다.
 
-`Max Heap`이란, 각 노드의 값이 해당 children 의 값보다 **크거나 같은** `complete binary tree`를 말한다. ( Min heap 은 그 반대이다.)
+`Max Heap`이란, 각 노드의 값이 children 의 값보다 **크거나 같은** `complete binary tree`를 말합니다. 참고로 `Complete binary tree`는 배열로 구현하는 것이 좋습니다.
 
-`Max heap`에서는 Root node 에 있는 값이 제일 크므로, 최대값을 찾는데 소요되는 연산의 time complexity 이 O(1)이다. 그리고 `complete binary tree`이기 때문에 배열을 사용하여 효율적으로 관리할 수 있다. (즉, random access 가 가능하다. Min heap 에서는 최소값을 찾는데 소요되는 연산의 time complexity 가 O(1)이다.) 하지만 heap 의 구조를 계속 유지하기 위해서는 제거된 루트 노드를 대체할 다른 노드가 필요하다. 여기서 heap 은 맨 마지막 노드를 루트 노드로 대체시킨 후, 다시 heapify 과정을 거쳐 heap 구조를 유지한다. 이런 경우에는 결국 O(log n)의 시간복잡도로 최대값 또는 최소값에 접근할 수 있게 된다.
+`Max heap`에서는 Root node 에 있는 값이 제일 크므로, 최대값을 찾는데 소요되는 연산의 time complexity 이 O(1)입니다. 그리고 `complete binary tree`이기 때문에 배열을 사용하여 효율적으로 관리할 수 있습니다. 삭제 연산이 일어날 경우, heap 은 맨 마지막 노드를 루트 노드로 대체시킨 후, heapify 과정을 거쳐 heap 구조를 유지합니다. 이러한 heapify 연산의 시간복잡도는 `O(logn)`이 됩니다. 삽입 연산의 경우에도, 최대 트리의 높이만큼의 연산이 발생하므로 시간 복잡도는 `O(logn)`이 됩니다.
+
+힙은 Max 또는 Min 값을 찾는 데에 특화되어있으며, 힙이 갖는 의미는 `우선순위 큐`와 동일합니다.
+_ref) Heap Sort는 Heap 자료구조에서 pop 연산을 노드의 개수만큼 호출한 정렬입니다._
 
 #### Personal Recommendation
 
-* Heapify 구현하기
+- [Max-heap 구현하기 (heapify 포함)](./max_heap.py)
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-1-2-datastructure)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-1-2-datastructure)
 
 </br>
 
 ## Red Black Tree
 
+RBT(Red-Black Tree)는 BST인데, 트리의 높이를 항상 logn 으로 유지합니다. 따라서 RBT에 데이터를 삽입, 삭제, 검색 하는 데에 걸리는 시간 복잡도는 항상 O(logn)이 됩니다. depth가 최소가 되는 경우는 tree가 complete binary tree인 경우와 같습니다.
+
 RBT(Red-Black Tree)는 BST 를 기반으로하는 트리 형식의 자료구조이다. 결론부터 말하자면 Red-Black Tree 에 데이터를 저장하게되면 Search, Insert, Delete 에 O(log n)의 시간 복잡도가 소요된다. 동일한 노드의 개수일 때, depth 를 최소화하여 시간 복잡도를 줄이는 것이 핵심 아이디어이다. 동일한 노드의 개수일 때, depth 가 최소가 되는 경우는 tree 가 complete binary tree 인 경우이다.
 
 ### Red-Black Tree 의 정의
 
-Red-Black Tree 는 다음의 성질들을 만족하는 BST 이다.
+Red-Black Tree 는 다음의 성질들을 만족하는 BST 입니다.
 
 1.  각 노드는 `Red` or `Black`이라는 색깔을 갖는다.
 2.  Root node 의 색깔은 `Black`이다.
-3.  각 leaf node 는 `black`이다.
+3.  각 leaf node 는 `black`이다. (NIL 노드가 Black 입니다.)
 4.  어떤 노드의 색깔이 `red`라면 두 개의 children 의 색깔은 모두 black 이다.
 5.  각 노드에 대해서 노드로부터 descendant leaves 까지의 단순 경로는 모두 같은 수의 black nodes 들을 포함하고 있다. 이를 해당 노드의 `Black-Height`라고 한다.  
     _cf) Black-Height: 노드 x 로부터 노드 x 를 포함하지 않은 leaf node 까지의 simple path 상에 있는 black nodes 들의 개수_
@@ -182,7 +204,7 @@ _RBT 는 BST 의 삽입, 삭제 연산 과정에서 발생할 수 있는 문제�
 
 Java Collection 에서 ArrayList 도 내부적으로 RBT 로 이루어져 있고, HashMap 에서의 `Separate Chaining`에서도 사용된다. 그만큼 효율이 좋고 중요한 자료구조이다.
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-1-2-datastructure)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-1-2-datastructure)
 
 ---
 
@@ -238,10 +260,10 @@ Collision 이 많아질 수록 Search 에 필요한 Time Complexity 가 O(1)에�
 
 일반적으로 Open Addressing 은 Separate Chaining 보다 느리다. Open Addressing 의 경우 해시 버킷을 채운 밀도가 높아질수록 Worst Case 발생 빈도가 더 높아지기 때문이다. 반면 Separate Chaining 방식의 경우 해시 충돌이 잘 발생하지 않도록 보조 해시 함수를 통해 조정할 수 있다면 Worst Case 에 가까워 지는 빈도를 줄일 수 있다. Java 7 에서는 Separate Chaining 방식을 사용하여 HashMap 을 구현하고 있다. Separate Chaining 방식으로는 두 가지 구현 방식이 존재한다.
 
-* **연결 리스트를 사용하는 방식(Linked List)**  
+- **연결 리스트를 사용하는 방식(Linked List)**  
   각각의 버킷(bucket)들을 연결리스트(Linked List)로 만들어 Collision 이 발생하면 해당 bucket 의 list 에 추가하는 방식이다. 연결 리스트의 특징을 그대로 이어받아 삭제 또는 삽입이 간단하다. 하지만 단점도 그대로 물려받아 작은 데이터들을 저장할 때 연결 리스트 자체의 오버헤드가 부담이 된다. 또 다른 특징으로는, 버킷을 계속해서 사용하는 Open Address 방식에 비해 테이블의 확장을 늦출 수 있다.
 
-* **Tree 를 사용하는 방식 (Red-Black Tree)**  
+- **Tree 를 사용하는 방식 (Red-Black Tree)**  
   기본적인 알고리즘은 Separate Chaining 방식과 동일하며 연결 리스트 대신 트리를 사용하는 방식이다. 연결 리스트를 사용할 것인가와 트리를 사용할 것인가에 대한 기준은 하나의 해시 버킷에 할당된 key-value 쌍의 개수이다. 데이터의 개수가 적다면 링크드 리스트를 사용하는 것이 맞다. 트리는 기본적으로 메모리 사용량이 많기 때문이다. 데이터 개수가 적을 때 Worst Case 를 살펴보면 트리와 링크드 리스트의 성능 상 차이가 거의 없다. 따라서 메모리 측면을 봤을 때 데이터 개수가 적을 때는 링크드 리스트를 사용한다.
 
 **_데이터가 적다는 것은 얼마나 적다는 것을 의미하는가?_**  
@@ -266,7 +288,7 @@ Collision 이 많아질 수록 Search 에 필요한 Time Complexity 가 O(1)에�
 
 ##### Reference
 
-* http://d2.naver.com/helloworld/831311
+- http://d2.naver.com/helloworld/831311
 
 [뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-1-2-datastructure)
 
@@ -287,7 +309,7 @@ _cf) 트리 또한 그래프이며, 그 중 사이클이 허용되지 않는 그
 말 그대로 정점과 간선의 연결관계에 있어서 방향성이 없는 그래프를 Undirected Graph 라 하고,
 간선에 방향성이 포함되어 있는 그래프를 Directed Graph 라고 한다.
 
-* Directed Graph(Digraph)
+- Directed Graph(Digraph)
 
 ```
 V = {1, 2, 3, 4, 5, 6}
@@ -295,7 +317,7 @@ E = {(1, 4), (2,1), (3, 4), (3, 4), (5, 6)}
 (u, v) = vertex u에서 vertex v로 가는 edge
 ```
 
-* Undirected Graph
+- Undirected Graph
 
 ```
 V = {1, 2, 3, 4, 5, 6}
