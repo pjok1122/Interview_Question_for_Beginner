@@ -30,21 +30,21 @@
 - [What is this?](#what-is-this?)
 - [면접에서 받았던 질문들](#면접에서-받았던-질문들)
 - [Part 1. CS](#part-1-전산-기초)
-  - [개발상식](https://github.com/pjok1122/Beginner_for_interview/tree/master/Development_common_sense)
-  - [자료구조](https://github.com/pjok1122/for_beginner/tree/master/DataStructure)
-  - [네트워크](https://github.com/pjok1122/Beginner_for_interview/tree/master/Network)
-  - [운영체제](https://github.com/pjok1122/Beginner_for_interview/tree/master/OS)
-  - [데이터베이스](https://github.com/pjok1122/Beginner_for_interview/tree/master/Database)
-  - [디자인패턴](https://github.com/pjok1122/Beginner_for_interview/tree/master/DesignPattern)
-  - [알고리즘](https://github.com/pjok1122/Interview_Question_for_Beginner/tree/master/Algorithm)
+  - [개발상식](./Development_common_sense/README.md)
+  - [자료구조](./DataStructure/README.md)
+  - [네트워크](./Network/README.md)
+  - [운영체제](./OS/README.md)
+  - [데이터베이스](./Database/README.md)
+  - [디자인패턴](./DesignPattern/README.md)
+  - [알고리즘](./Algorithm/README.md)
 - [Part 2. Language](#part-2-language)
-  - [Java](https://github.com/pjok1122/Beginner_for_interview/tree/master/Java)
-  - [JavaScript](https://github.com/pjok1122/Interview_Question_for_Beginner/tree/master/JavaScript)
-  - [Python](https://github.com/pjok1122/Interview_Question_for_Beginner/tree/master/Python)
+  - [Java](./Java/README.md)
+  - [JavaScript](./JavaScript/README.md)
+  - [Python](./Python/README.md)
 - [Part 3. 분야별 정리](#part-3-분야별)
-  - [FrontEnd](https://github.com/pjok1122/Interview_Question_for_Beginner/tree/master/FrontEnd)
-  - [iOS](https://github.com/pjok1122/Interview_Question_for_Beginner/tree/master/iOS)
-  - [Machine Learning](https://github.com/pjok1122/Interview_Question_for_Beginner/tree/master/MachineLearning)
+  - [FrontEnd](./FrontEnd/README.md)
+  - [iOS](./iOS/README.md)
+  - [Machine Learning](./MachineLearning/README.md)
 - [그 외 좋은 자료 추천](#그-외-좋은-자료)
 
 </br>
@@ -57,24 +57,11 @@
 
 > 취준생 여러분의 건승을 기원합니다 :thumbsup:
 
-### :sparkles: HELP
-
-##### :pray: [HOW TO CONTRIBUTE](https://github.com/pjok1122/Interview_Question_for_Beginner/blob/master/CONTRIBUTING.md)
-
-##### :star: 이 저장소는 PR 과 star 를 먹고 자랍니다.
-
 </br>
 
 </br>
 
 ---
-
-### [면접에서 받았던 질문들](https://github.com/pjok1122/Interview_Question_for_Beginner/issues/59)
-
-해당 Issue 에서 실제로 받았던 면접 질문들을 공유할 수 있습니다.
-
----
-
 
 ### [회사에 궁금한 점이 있으신가요?](https://github.com/pjok1122/Interview_Question_for_Beginner/tree/master/Reverse_Interview)
 
@@ -84,7 +71,7 @@
 
 # Part 1. 전산 기초
 
-## :bulb: 개발상식 [Link](https://github.com/pjok1122/Beginner_for_interview/tree/master/Development_common_sense)
+## :bulb: 개발상식 [Link](./Development_common_sense/README.md)
 
 - 객체 지향 프로그래밍이란 무엇인가?
 - RESTFul API 란?
@@ -95,7 +82,7 @@
 
 </br>
 
-## :bulb: 자료구조 [Link](https://github.com/pjok1122/for_beginner/tree/master/DataStructure)
+## :bulb: 자료구조 [Link](./DataStructure/README.md)
 
 - Array vs LinkedList
 - Stack and Queue
@@ -126,13 +113,18 @@
 
 </br>
 
-## :bulb: 네트워크 [Link](https://github.com/pjok1122/Beginner_for_interview/tree/master/Network)
+## :bulb: 네트워크 [Link](./Network/README.md)
 
 - GET, POST 방식의 차이점
 - TCP 3-way-handshake
+- TCP 4-way-handshake
 - TCP 와 UDP 의 차이점
+  - TCP 흐름제어
+  - TCP 혼잡제어
+- OSI 7계층
 - HTTP 와 HTTPS 의 차이점
   - HTTP 의 문제점들
+  - HTTPS의 동작 방법
 - DNS round robin 방식
 - 웹 통신의 큰 흐름
 
@@ -172,7 +164,7 @@
 
 </br>
 
-## :bulb: 데이터베이스 [Link](https://github.com/pjok1122/Beginner_for_interview/tree/master/Database)
+## :bulb: 데이터베이스 [Link](./Database/README.md)
 
 - 데이터베이스
   - 데이터베이스를 사용하는 이유
