@@ -115,17 +115,17 @@
 
 ## :bulb: 네트워크 [Link](./Network/README.md)
 
-- GET, POST 방식의 차이점
+- HTTP 의 GET 과 POST 비교
 - TCP 3-way-handshake
 - TCP 4-way-handshake
-- TCP 와 UDP 의 차이점
-  - TCP 흐름제어
-  - TCP 혼잡제어
+- TCP와 UDP의 비교
+  - TCP의 흐름제어
+  - TCP의 혼잡제어
 - OSI 7계층
-- HTTP 와 HTTPS 의 차이점
+- HTTP 와 HTTPS
   - HTTP 의 문제점들
-  - HTTPS의 동작 방법
-- DNS round robin 방식
+  - HTTPS의 동작원리
+- DNS Round Robin 방식
 - 웹 통신의 큰 흐름
 
 </br>
