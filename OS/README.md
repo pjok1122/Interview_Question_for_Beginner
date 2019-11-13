@@ -1,6 +1,8 @@
 # Part 1-4 운영체제
 
-- [프로세스와 스레드의 차이](#프로세스와-스레드의-차이)
+- [프로세스와 스레드](#프로세스와-스레드의-차이)
+  - 프로세스와 스레드의 차이점
+  - 프로세스 제어블록(PCB)
 - [멀티스레드](#멀티-스레드)
   - 장점과 단점
   - 멀티스레드 vs 멀티프로세스
@@ -21,8 +23,10 @@
     - Lock
     - Semaphores
     - 모니터
+  - 데드락
 - [메모리 관리 전략](#메모리-관리-전략)
-  - 메모리 관리 배경
+  - Swap
+  - 단편화
   - Paging
   - Segmentation
 - [가상 메모리](#가상-메모리)
@@ -30,11 +34,15 @@
   - 가상 메모리가 하는 일
   - Demand Paging(요구 페이징)
   - 페이지 교체 알고리즘
+    - FIFO
+    - Optimal
+    - LRU (Least Recently Used)
+    - LFU (Least Frequently Used)
 - [캐시의 지역성](#캐시의-지역성)
   - Locality
   - Caching line
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-1-4-운영체제)
 
 </br>
 
@@ -90,7 +98,7 @@ _PCB 에 저장되는 정보_
 
 </br>
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-1-4-운영체제)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-1-4-운영체제)
 
 </br>
 
@@ -122,7 +130,7 @@ _PCB 에 저장되는 정보_
 
 멀티 스레드는 멀티 프로세스보다 적은 메모리 공간을 차지하고 문맥 전환이 빠르다는 장점이 있지만, 오류로 인해 하나의 스레드가 종료되면 전체 스레드가 종료될 수 있다는 점과 동기화 문제를 안고 있다. 반면 **멀티 프로세스 방식은 하나의 프로세스가 죽더라도 다른 프로세스에는 영향을 끼치지 않고 정상적으로 수행된다는 장점이 있지만, 멀티 스레드보다 많은 메모리 공간과 CPU 시간을 차지한다는 단점이 존재한다.** 이 두 가지는 동시에 여러 작업을 수행한다는 점에서 같지만 적용해야 하는 시스템에 따라 적합/부적합이 구분된다. 따라서 대상 시스템의 특징에 따라 적합한 동작 방식을 선택하고 적용해야 한다.
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-1-4-운영체제)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-1-4-운영체제)
 
 </br>
 
@@ -178,7 +186,7 @@ _cf) 메모리에 프로그램이 너무 많이 올라가도, 너무 적게 올�
 
 Suspended(stopped) : 외부적인 이유로 프로세스의 수행이 정지된 상태로 메모리에서 내려간 상태를 의미한다. 프로세스 전부 디스크로 swap out 된다. blocked 상태는 다른 I/O 작업을 기다리는 상태이기 때문에 스스로 ready state 로 돌아갈 수 있지만 이 상태는 외부적인 이유로 suspending 되었기 때문에 스스로 돌아갈 수 없다.
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-1-4-운영체제)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-1-4-운영체제)
 
 </br>
 
@@ -274,7 +282,7 @@ _스케줄링 대상은 Ready Queue 에 있는 프로세스들이다._
 또 너무 작아지면 스케줄링 알고리즘의 목적에는 이상적이지만 잦은 context switch 로 overhead 가 발생한다.
 그렇기 때문에 적당한 `time quantum`을 설정하는 것이 중요하다.
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-1-4-운영체제)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-1-4-운영체제)
 
 </br>
 
@@ -299,7 +307,7 @@ _글로만 설명하기가 어려운 것 같아 그림과 함께 설명된 링�
 
 - http://asfirstalways.tistory.com/348
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-1-4-운영체제)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-1-4-운영체제)
 
 </br>
 
@@ -364,7 +372,7 @@ OS 는 Counting/Binary 세마포를 구분한다
 - 고급 언어의 설계 구조물로서, 개발자의 코드를 상호배제 하게끔 만든 추상화된 데이터 형태이다. (Java의 Synchronized)
 - 공유자원에 접근하기 위한 키 획득과 자원 사용 후 해제를 모두 처리한다. (세마포어는 직접 키 해제와 공유자원 접근 처리가 필요하다.)
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-1-4-운영체제)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-1-4-운영체제)
 
 ---
 
@@ -421,12 +429,13 @@ OS 는 Counting/Binary 세마포를 구분한다
 
 외부 단편화가 발생한다.
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-1-4-운영체제)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-1-4-운영체제)
 
 ---
 
 ## 가상 메모리
 
+![가상메모리](./images/가상메모리.png)
 다중 프로그래밍을 실현하기 위해서는 많은 프로세스들을 동시에 메모리에 올려두어야 한다. 가상메모리는 **프로세스 전체가 메모리 내에 올라오지 않더라도 실행이 가능하도록 하는 기법** 이며, 프로그램이 물리 메모리보다 커도 된다는 주요 장점이 있다.
 
 #### 프로그램의 일부분만 메모리에 올릴 수 있다면...
@@ -478,11 +487,11 @@ OS 는 Counting/Binary 세마포를 구분한다
 물리 메모리가 모두 사용중인 상황에서의 메모리 교체 흐름이다.
 
 1.  디스크에서 필요한 페이지의 위치를 찾는다
-1.  빈 페이지 프레임을 찾는다.
+2.  빈 페이지 프레임을 찾는다.
     1.  `페이지 교체 알고리즘`을 통해 희생될(victim) 페이지를 고른다.
-    1.  희생될 페이지를 디스크에 기록하고, 관련 페이지 테이블을 수정한다.
-1.  새롭게 비워진 페이지 테이블 내 프레임에 새 페이지를 읽어오고, 프레임 테이블을 수정한다.
-1.  사용자 프로세스 재시작
+    2.  희생될 페이지를 디스크에 기록하고, 관련 페이지 테이블을 수정한다.
+3.  새롭게 비워진 페이지 테이블 내 프레임에 새 페이지를 읽어오고, 프레임 테이블을 수정한다.
+4.  사용자 프로세스 재시작
 
 #### 페이지 교체 알고리즘
 
@@ -527,7 +536,7 @@ OS 는 Counting/Binary 세마포를 구분한다
 
 </br>
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-1-4-운영체제)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-1-4-운영체제)
 
 ---
 
@@ -559,7 +568,7 @@ OS 는 Counting/Binary 세마포를 구분한다
 2.  Set Associative
 3.  Direct Map
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-1-4-운영체제)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-1-4-운영체제)
 
 </br>
 
