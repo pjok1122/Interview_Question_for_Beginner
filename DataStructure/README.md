@@ -13,6 +13,7 @@
   - 특징
   - 삽입
   - 삭제
+- [B-Tree](#b-tree)
 - [HashTable](#hashtable)
   - hash function
   - Resolve Collision
@@ -207,6 +208,36 @@ Java Collection 에서 ArrayList 도 내부적으로 RBT 로 이루어져 있고
 [뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-1-2-datastructure)
 
 ---
+
+## Balanced Tree
+
+### B tree
+
+> 이진 트리를 확장해서 더 많은 자식을 가질 수 있는 검색 트리이다. 데이터베이스, 파일 시스템에서 널리 사용되는 자료구조이며, 특히 데이터베이스의 인덱스에 활용된다.
+
+![btree](./images/btree.gif)
+
+#### 노드의 크기를 디스크 I/O로 읽어들일 수 있는 크기로 지정하면 효율이 좋다.
+
+##### 규칙
+
+- 노드의 자료수가 N이면 자식 수는 N+1이다.
+- 각 노드의 자료는 정렬된 상태를 유지한다.
+- 루트 노드는 적어도 두 개의 자식을 갖는다.
+- M차 B tree라면, 루트 노드를 제외한 모든 노드는 적어도 M/2개의 자료를 가지고 있어야 한다.
+- 입력 자료는 중복될 수가 없다.
+- leaf 노드들의 레벨은 모두 같다.
+
+#### 삭제 과정 살펴보기
+
+![btree-delete](./images/b-tree_delete1.bmp)
+![btree-delete](./images/b-tree_delete2.bmp)
+
+### B+ Tree
+
+</br>
+
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-1-2-datastructure)
 
 </br>
 
