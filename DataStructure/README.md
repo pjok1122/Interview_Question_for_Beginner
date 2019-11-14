@@ -51,8 +51,8 @@ LinkedList의 각 노드는 자신과 연결된 노드의 주소와 값을 저�
 
 #### Personal Recommendation
 
-- [LinkedList 구현하기](./LinkedList.py)
-- [주어진 배열을 k 만큼 Shift 하는 알고리즘 만들기](./Shift-k.py)
+- [LinkedList 구현하기](./codes/LinkedList.py)
+- [주어진 배열을 k 만큼 Shift 하는 알고리즘 만들기](./codes/Shift-k.py)
 - sum(i\*arr[i])의 값이 최대가 되도록 만들기
 
 [뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-1-2-datastructure)
@@ -73,11 +73,11 @@ LinkedList의 각 노드는 자신과 연결된 노드의 주소와 값을 저�
 
 #### Personal Recommendation
 
-- [Stack을 Array, List, LinkedList로 구현하고 각각의 차이점 파악하기.](./Stack.py)
-- [Stack 을 사용하여 미로찾기 구현하기(DFS를 iterative 또는 recursive)](./maze.py)
-- [Queue를 Array, List, LinkedList로 구현하고 각각의 차이점 파악하기.](./Queue.py)
-- [Stack 두 개로 Queue 자료구조 구현하기](./stack_to_queue.py)
-- [Stack 으로 괄호 유효성 체크 코드 구현하기](./괄호유효성.py)
+- [Stack을 Array, List, LinkedList로 구현하고 각각의 차이점 파악하기.](./codes/Stack.py)
+- [Stack 을 사용하여 미로찾기 구현하기(DFS를 iterative 또는 recursive)](./codes/maze.py)
+- [Queue를 Array, List, LinkedList로 구현하고 각각의 차이점 파악하기.](./codes/Queue.py)
+- [Stack 두 개로 Queue 자료구조 구현하기](./codes/stack_to_queue.py)
+- [Stack 으로 괄호 유효성 체크 코드 구현하기](./codes/괄호유효성.py)
 
 [뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-1-2-datastructure)
 
@@ -138,10 +138,10 @@ LinkedList의 각 노드는 자신과 연결된 노드의 주소와 값을 저�
 
 #### Personal Recommendation
 
-- [Tree는 어떻게 구현하는 것이 좋을까? (인접행렬 vs 연결리스트)](./Tree.py)
-- [Binary Tree의 3가지 순회 방법 구현하기](./트리의순회.py)
-- [주어진 트리가 Binary 트리인지 확인하는 알고리즘 구현하기](./check_binary.py)
-- [Binary Search Tree 구현하기](./BST.py)
+- [Tree는 어떻게 구현하는 것이 좋을까? (인접행렬 vs 연결리스트)](./codes/Tree.py)
+- [Binary Tree의 3가지 순회 방법 구현하기](./codes/트리의순회.py)
+- [주어진 트리가 Binary 트리인지 확인하는 알고리즘 구현하기](./codes/check_binary.py)
+- [Binary Search Tree 구현하기](./codes/BST.py)
 - 주어진 트리가 Binary Search Tree인지 확인하는 알고리즘 구현하기
 
 [뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-1-2-datastructure)
@@ -161,7 +161,7 @@ _ref) Heap Sort는 Heap 자료구조에서 pop 연산을 노드의 개수만큼 
 
 #### Personal Recommendation
 
-- [Max-heap 구현하기 (heapify 포함)](./max_heap.py)
+- [Max-heap 구현하기 (heapify 포함)](./codes/max_heap.py)
 
 [뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-1-2-datastructure)
 
@@ -212,26 +212,19 @@ Java Collection 에서 ArrayList 도 내부적으로 RBT 로 이루어져 있고
 
 ## HashTable
 
-`hash`는 내부적으로 `배열`을 사용하여 데이터를 저장하기 때문에 빠른 검색 속도를 갖는다. 특정한 값을 Search 하는데 데이터 고유의 `인덱스`로 접근하게 되므로 average case 에 대하여 Time Complexity 가 O(1)이 되는 것이다.(항상 O(1)이 아니고 average case 에 대해서 O(1)인 것은 collision 때문이다.) 하지만 문제는 이 인덱스로 저장되는 `key`값이 불규칙하다는 것이다.
+![해시테이블](./images/hash_table.PNG)
 
-그래서 **특별한 알고리즘을 이용하여** 저장할 데이터와 연관된 **고유한 숫자를 만들어 낸 뒤** 이를 인덱스로 사용한다. 특정 데이터가 저장되는 인덱스는 그 데이터만의 고유한 위치이기 때문에, 삽입 연산 시 다른 데이터의 사이에 끼어들거나, 삭제 시 다른 데이터로 채울 필요가 없으므로 연산에서 추가적인 비용이 없도록 만들어진 구조이다.
+[사진 출처](https://ratsgo.github.io/data%20structure&algorithm/2017/10/25/hash/)
+
+`hash`는 내부적으로 `배열`을 사용하여 데이터를 저장하기 때문에 빠른 검색 속도를 갖는다. 특정한 값을 Search 하는데 데이터 고유의 `인덱스`로 접근하게 되므로 average case 에 대하여 Time Complexity 가 O(1)이 된다.
 
 </br>
 
 ### hash function
 
-'특별한 알고리즘'이란 것을 통해 고유한 인덱스 값을 설정하는 것이 중요해보인다. 위에서 언급한 '특별한 알고리즘'을 `hash method` 또는 `해시 함수(hash function)`라고 하고 이 메소드에 의해 반환된 데이터의 고유 숫자 값을 `hashcode`라고 한다. 저장되는 값들의 key 값을 `hash function`을 통해서 **작은 범위의 값들로** 바꿔준다.
+임의의 길이의 데이터를 고정된 길이의 데이터로 매핑하는 함수이다. 일반적으로 도메인이 공역보다 크기 때문에 비둘기집의 원리에 의해 반드시 충돌쌍이 발생할 수 있다. 이러한 충돌쌍이 언제 발생하는지 유추할 수 없도록 함수를 잘 설계하는 것이 무엇보다 중요하다.
 
-하지만 어설픈 `hash function`을 통해서 key 값들을 결정한다면 동일한 값이 도출될 수가 있다. 이렇게 되면 동일한 key 값에 복수 개의 데이터가 하나의 테이블에 존재할 수 있게 되는 것인데 이를 `Collision` 이라고 한다.  
-_Collision : 서로 다른 두 개의 키가 같은 인덱스로 hashing(hash 함수를 통해 계산됨을 의미)되면 같은 곳에 저장할 수 없게 된다._
-
-#### 그렇다면 좋은 `hash function`는 어떠한 조건들을 갖추고 있어야 하는가?
-
-일반적으로 좋은 `hash function`는 키의 일부분을 참조하여 해쉬 값을 만들지 않고 키 전체를 참조하여 해쉬 값을 만들어 낸다. 하지만 좋은 해쉬 함수는 키가 어떤 특성을 가지고 있느냐에 따라 달라지게 된다.
-
-`hash function`를 무조건 1:1 로 만드는 것보다 Collision 을 최소화하는 방향으로 설계하고 발생하는 Collision 에 대비해 어떻게 대응할 것인가가 더 중요하다. 1:1 대응이 되도록 만드는 것이 거의 불가능하기도 하지만 그런 `hash function`를 만들어봤자 그건 array 와 다를바 없고 메모리를 너무 차지하게 된다.
-
-Collision 이 많아질 수록 Search 에 필요한 Time Complexity 가 O(1)에서 O(n)에 가까워진다. 어설픈 `hash function`는 hash 를 hash 답게 사용하지 못하도록 한다. 좋은 `hash function`를 선택하는 것은 hash table 의 성능 향상에 필수적인 것이다.
+`Collision` 이 많아질 수록 Search 에 필요한 Time Complexity 가 O(1)에서 O(n)에 가까워진다. 어설픈 `hash function`는 hash 를 hash 답게 사용하지 못하도록 한다. 좋은 `hash function`를 선택하는 것은 hash table 의 성능 향상에 필수적인 것이다.
 
 따라서 hashing 된 인덱스에 이미 다른 값이 들어 있다면 세 데이터를 저장할 다른 위치를 찾은 뒤에야 저장할 수 있는 것이다. 따라서 충돌 해결은 필수이며 그 방법들에 대해 알아보자.
 
@@ -248,17 +241,19 @@ Collision 이 많아질 수록 Search 에 필요한 Time Complexity 가 O(1)에�
 공개 주소 방식이라고도 불리는 이 알고리즘은 Collision 이 발생하면 데이터를 저장할 장소를 찾아 헤맨다. Worst Case 의 경우 비어있는 버킷을 찾지 못하고 탐색을 시작한 위치까지 되돌아 올 수 있다. 이 과정에서도 여러 방법들이 존재하는데, 다음 세 가지에 대해 알아보자.
 
 1.  Linear Probing  
-    순차적으로 탐색하며 비어있는 버킷을 찾을 때까지 계속 진행된다.
+    충돌 발생 시 +1씩 늘려가며 빈 버킷을 찾는다.
 2.  Quadratic probing  
-    2 차 함수를 이용해 탐색할 위치를 찾는다.
+    충돌 발생 시 +1, +4, +9 씩 늘려가며 빈 버킷을 찾는다.
 3.  Double hashing probing  
-    하나의 해쉬 함수에서 충돌이 발생하면 2 차 해쉬 함수를 이용해 새로운 주소를 할당한다. 위 두 가지 방법에 비해 많은 연산량을 요구하게 된다.
+    충돌 발생 시, 또 다른 해시함수를 가지고 몇 칸 이동해서 빈 버킷을 찾을지 결정한다.
 
 </br>
 
 #### 2. Separate Chaining 방식 (분리 연결법)
 
-일반적으로 Open Addressing 은 Separate Chaining 보다 느리다. Open Addressing 의 경우 해시 버킷을 채운 밀도가 높아질수록 Worst Case 발생 빈도가 더 높아지기 때문이다. 반면 Separate Chaining 방식의 경우 해시 충돌이 잘 발생하지 않도록 보조 해시 함수를 통해 조정할 수 있다면 Worst Case 에 가까워 지는 빈도를 줄일 수 있다. Java 7 에서는 Separate Chaining 방식을 사용하여 HashMap 을 구현하고 있다. Separate Chaining 방식으로는 두 가지 구현 방식이 존재한다.
+![해시 체이닝](./images/hash_chaining.png)
+
+일반적으로 Open Addressing 은 Separate Chaining 보다 느리다. Open Addressing 의 경우 해시 버킷을 채운 밀도가 높아질수록 Worst Case 발생 빈도가 더 높아지기 때문이다. Java 7 에서는 Separate Chaining 방식을 사용하여 HashMap 을 구현하고 있다. Separate Chaining 방식으로는 두 가지 구현 방식이 존재한다.
 
 - **연결 리스트를 사용하는 방식(Linked List)**  
   각각의 버킷(bucket)들을 연결리스트(Linked List)로 만들어 Collision 이 발생하면 해당 bucket 의 list 에 추가하는 방식이다. 연결 리스트의 특징을 그대로 이어받아 삭제 또는 삽입이 간단하다. 하지만 단점도 그대로 물려받아 작은 데이터들을 저장할 때 연결 리스트 자체의 오버헤드가 부담이 된다. 또 다른 특징으로는, 버킷을 계속해서 사용하는 Open Address 방식에 비해 테이블의 확장을 늦출 수 있다.
@@ -274,7 +269,7 @@ Collision 이 많아질 수록 Search 에 필요한 Time Complexity 가 O(1)에�
 
 #### `Open Address` vs `Separate Chaining`
 
-일단 두 방식 모두 Worst Case 에서 O(M)이다. 하지만 `Open Address`방식은 연속된 공간에 데이터를 저장하기 때문에 `Separate Chaining`에 비해 캐시 효율이 높다. 따라서 데이터의 개수가 충분히 적다면 `Open Address`방식이 `Separate Chaining`보다 더 성능이 좋다. 한 가지 차이점이 더 존재한다. `Separate Chaining`방식에 비해 `Open Address`방식은 버킷을 계속해서 사용한다. 따라서 `Separate Chaining` 방식은 테이블의 확장을 보다 늦출 수 있다.
+일단 두 방식 모두 Worst Case 에서 O(N)이다. 하지만 `Open Address`방식은 연속된 공간에 데이터를 저장하기 때문에 `Separate Chaining`에 비해 캐시 효율이 높다. 따라서 데이터의 개수가 충분히 적다면 `Open Address`방식이 `Separate Chaining`보다 더 성능이 좋다. 한 가지 차이점이 더 존재한다. `Separate Chaining`방식에 비해 `Open Address`방식은 버킷을 계속해서 사용한다. 따라서 `Separate Chaining` 방식은 테이블의 확장을 보다 늦출 수 있다.
 
 #### 보조 해시 함수
 
@@ -290,9 +285,25 @@ Collision 이 많아질 수록 Search 에 필요한 Time Complexity 가 O(1)에�
 
 - http://d2.naver.com/helloworld/831311
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-1-2-datastructure)
+## [뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-1-2-datastructure)
 
----
+</br>
+
+## 트라이(Trie)
+
+> 문자열 검색을 빠르게 도와주는 자료구조
+
+![Trie](./images/Trie.jpg)
+
+문자열의 길이가 M인 문자열에 대해서 이진탐색을 진행하면 시간 복잡도는 `O(MlogN)`이 됩니다. 하지만 `Trie`를 이용하는 경우에는 시간 복잡도를 `O(M)`으로 낮출 수 있습니다.
+
+#### Personal Recommendation
+
+- [Trie 구현하기](./codes/Trie.py)
+
+</br>
+
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-1-2-datastructure)
 
 </br>
 

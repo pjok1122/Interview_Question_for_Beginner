@@ -130,7 +130,7 @@
 
 </br>
 
-## :bulb: 운영체제 [Link](https://github.com/pjok1122/Beginner_for_interview/tree/master/OS)
+## :bulb: 운영체제 [Link](./OS/README.md)
 
 - 프로세스와 스레드의 차이
 - 스케줄러의 종류
@@ -204,16 +204,14 @@
 
 </br>
 
-## :bulb: Design Pattern [Link](https://github.com/pjok1122/Beginner_for_interview/tree/master/DesignPattern)
+## :bulb: Design Pattern [Link](./DesignPattern/README.md)
 
 - Singleton
 
 </br>
 
-## :bulb: Algorithm (알고리즘) [Link](https://github.com/pjok1122/Interview_Question_for_Beginner/tree/master/Algorithm)
+## :bulb: Algorithm (알고리즘) [Link](./Algorithm/README.md)
 
-- 손코딩 및 코딩 테스트 대비  
-  => 대부분의 내용이 코드이기 때문에 별도의 [Java Algorithm Training Repository](https://github.com/pjok1122/algorithm_basic_java)에 저장합니다.
 - 코딩 테스트를 위한 Tip
 - 문제 해결을 위한 전략적 접근
 - Sorting Algorithm
@@ -231,7 +229,7 @@
 
 # Part 2. Language
 
-## :gem: Java [Link](https://github.com/pjok1122/Beginner_for_interview/tree/master/Java)
+## :gem: Java [Link](./Java/README.md)
 
 - JVM 에 대해서 / GC 의 원리
 - Collection
@@ -249,7 +247,7 @@
 
 </br>
 
-## :gem: JavaScript [Link](https://github.com/pjok1122/Interview_Question_for_Beginner/tree/master/JavaScript)
+## :gem: JavaScript [Link](./JavaScript/README.md)
 
 - JavaScript Event Loop
 - Hoisting
@@ -265,7 +263,7 @@
   - JavaScript 와 관련된 인터뷰 관련 내용들을 정리해놓은 자료입니다.
     </br>
 
-## :gem: Python [Link](https://github.com/pjok1122/Interview_Question_for_Beginner/tree/master/Python)
+## :gem: Python [Link](./Python/README.md)
 
 - Generator
 - 클래스를 상속했을 때 메서드 실행 방식
@@ -293,7 +291,7 @@
 
 # Part 3. 분야별
 
-## :large_orange_diamond: Front-End [Link](https://github.com/pjok1122/Interview_Question_for_Beginner/tree/master/FrontEnd)
+## :large_orange_diamond: Front-End [Link](./FrontEnd/README.md)
 
 - 브라우저의 작동 원리
 - Document Object Model
@@ -317,7 +315,7 @@
 
 </br>
 
-## :large_orange_diamond: iOS [Link](https://github.com/pjok1122/Interview_Question_for_Beginner/tree/master/iOS)
+## :large_orange_diamond: iOS [Link](./iOS/README.md)
 
 - App Life Cycle
 - View Life Cycle
@@ -335,7 +333,7 @@
 
 </br>
 
-## :large_orange_diamond: Machine Learning [Link](https://github.com/pjok1122/Interview_Question_for_Beginner/tree/master/MachineLearning)
+## :large_orange_diamond: Machine Learning [Link](./MachineLearning/README.md)
 
 - Cost Function
 
