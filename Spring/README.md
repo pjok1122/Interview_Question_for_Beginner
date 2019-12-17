@@ -2,6 +2,8 @@
 
 ### IoC 컨테이너와 Bean
 
+![IoC컨테이너](./images/IoC컨테이너.jpg)
+
 Spring에서 사용되는 `IoC`란 객체가 내부적으로 조작할 객체를 직접 생성하지 않고 외부로부터 주입받는 기법을 의미한다. 이때 객체를 외부로부터 주입해주는 작업을 DI(의존성 주입)이라고 부른다.
 
 `IoC Container`는 오브젝트의 생성과 관계설정, 사용, 제거 등의 작업을 대신 해준다하여 붙여진 이름이다. 이때, `IoC Container`에 의해 관리되는 오브젝트들은 `Bean` 이라고 부른다. `IoC Container`는 `Bean`을 저장한다고 하여, `BeanFactory` 라고도 불린다. `BeanFactory`는 하나의 인터페이스이며, `Application Context`는 `BeanFactory`의 구현체를 상속받고 있는 인터페이스이다. 실제로 스프링에서 `IoC Container` 라고 불리는 것은 `Application Context`의 구현체이다.
@@ -45,3 +47,112 @@ IoC 컨테이너는 계층구조로 구현할 수 있다. 각자 독립적으로
 ![웹환경애플리케이션2](./images/웹환경애플리케이션2.PNG)
 
 DispatcherServlet은 자체적으로 ApplicationContext를 생성하고 사용한다. 이를 `ServletContext` 라고도 부른다. 이외에도 RootApplicationContext가 하나 존재하는데, 이는 스프링 외의 기술을 사용하는 Ajax Engine, JSP 등에서 Spring IoC의 기능을 사용할 수 있도록 하기 위함이다. 스프링 밖의 어디서라도 `WebApplicationContextUtils.getWebApplicationContext(ServletContext sc)` 를 호출하면 루트 어플리케이션 컨텍스트를 가져올 수 있다.
+
+## 빈 설정 / DI
+
+![설정메타정보](./images/설정메타정보.PNG)
+
+메타정보 중 반드시 들어가야 하는 것은 `클래스 이름`과 `빈의 이름` 이다. `빈의 이름`은 명시하지 않는 경우 클래스 이름에서 첫글자를 소문자로 바꿔 사용하게 된다. 메타정보를 작성하는 방법은 크게 XML, @Configuration, @Component 등록 세 가지로 나뉜다.
+
+#### XML을 이용한 등록
+
+```xml
+<bean id="hello" class="me.yj.test.bean.Hello">
+    <property name="printer" ref="myPrinter">
+</bean>
+```
+
+- id와 class를 필수적으로 지정한다.
+- property는 DI 작업을 위해 존재한다. printer라는 속성에 myPrinter라는 빈을 주입한다. (DI)
+
+Spring Boot가 도입된 후 잘 사용되지 않는다.
+
+#### 자동인식을 이용한 빈 등록
+
+빈 스캐너는 지정된 클래스패스 밑에 있는 모든 패키지의 클래스를 대상으로 _특정 애노테이션_ 이 존재하는지를 파악하고 빈으로 등록한다. 빈 스캐너에 의해 필터링 되는 애노테이션을 `스테레오타입 애노테이션`이라고 부른다. 주로 사용하는 스테레오 타입 애노테이션은 다음과 같다.
+
+- @Component : 빈으로 지정하는 가장 기본적인 애노테이션
+- @Repository : 데이터 액세스 계층의 DAO 또는 리포지토리 클래스에 사용된다.
+- @Service : 서비스 계층의 클래스에 사용된다.
+- @Controller : MVC 컨트롤러에 사용된다. 스프링 웹 서블릿에 의해 웹 요청을 처리하는 컨트롤러 빈으로 선정된다.
+
+```java
+@Component
+public class AnnotationHello { }
+```
+
+#### ComponentScan
+
+컴포넌트 스캔은 `스캔 위치`와 어떤 애노테이션을 스캔할지에 대한 `필터`를 지정할 수 있다. 디폴트 값으로 `@Component`를 포함하는 경우 Bean으로 등록한다. 실제 스캐닝은 `ConfigurationClassPostProcessor` 라는 객체가 수행하며, 이 객체는 `BeanFactoryPostProcessor`를 구현한 객체이다. 당연한 소리이지만, 라이플 사이클로 봤을 때, 빈을 등록하기 이전에 수행된다.
+
+스프링은 어플리케이션을 구동하기 전에 컴포넌트 스캔을 하고 빈을 등록하기 때문에 구동 시간이 길어질 수 있다. 하지만 서비스 시에는 보통 싱글톤 스코프의 빈을 사용하기 때문에 서비스 시간은 짧은 편에 속한다.
+
+#### 자바코드에 의한 빈 등록 : @Configuration, @Bean
+
+```java
+@Configuration
+public class AnnotatedHelloConfig{
+    @Bean
+    public Hello hello(Printer printer){
+        return new Hello(printer);
+    }
+    @Bean
+    public Printer printer(){
+        return new Printer();
+    }
+}
+```
+
+- @Configuration 또한 @Component를 사용하기 때문에 빈 스캐너에 의해 자동 검색 된다.
+- @Configuration를 사용한 클래스 자체도 Bean으로 등록된다.
+- @Bean으로 등록된 메서드의 return 객체를 Bean으로 등록한다.
+- @Bean("name")으로 이름을 지정할 수 있으며 이름을 지정하지 않을 시 메서드 명이 id가 된다.
+- new 연산을 사용하지만, 매번 다른 객체가 생성되지 않고 싱글톤으로 DI된다.
+
+### @Autowired/@Inject를 이용한 DI
+
+@Autowired는 의존 객체의 "타입"에 해당하는 빈을 찾아 주입한다.
+스프링만 사용할 코드라면 둘 중 하나를 일관되게 사용하는 것이 좋다. 다만, 다른 환경에서도 사용할 가능성이 있다면 `@Inject`와 `DIJ(Dependency Injection for Java)`에서 정의한 애노테이션을 사용하는 것이 좋다.
+
+#### 사용 방법
+
+`@Autowired`는 Setter, field, constructor에 붙여 사용한다. 스프링 4.3부터는 constructor(생성자)에는 생략이 가능하다.
+
+```java
+public class Hello{
+    @Autowired
+    private Printer printer;
+}
+```
+
+#### 타입이 동일한 빈이 2개 이상인 경우
+
+`@Primary`, `@Qualifier("name")`, `Collection`을 이용하여 빈을 주입받는다.
+
+##### Primary
+
+같은 타입의 빈이 여러 개 일 때, 가장 우선순위를 높게 줄 빈을 설정한다. (선호방법)
+
+##### Qualifier
+
+`Qualifier("빈 이름")`으로 어떤 빈을 주입할 지 명시한다.
+
+##### Collection
+
+같은 타입의 빈을 모두 받아 저장한다.
+
+```java
+@Autowired
+ArrayList<Printer> printers;
+```
+
+```java
+@Autowired
+Map<String, Printer> printerMap;
+```
+
+#### 동작 원리
+
+![빈팩토리-생명주기](./images/빈팩토리-생명주기.PNG)
+
+`AutowiredAnnotationBeanPostProcessor`는 `BeanPostProcessor`를 확장한 클래스다. 이 클래스 또한 빈으로 등록되어 있으며, 11번 Life Cycle에서 Bean들에게 있는 @Autowired을 처리하여 DI 로직을 처리해준다.
