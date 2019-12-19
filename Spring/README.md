@@ -54,7 +54,7 @@ DispatcherServlet은 자체적으로 ApplicationContext를 생성하고 사용�
 
 메타정보 중 반드시 들어가야 하는 것은 `클래스 이름`과 `빈의 이름` 이다. `빈의 이름`은 명시하지 않는 경우 클래스 이름에서 첫글자를 소문자로 바꿔 사용하게 된다. 메타정보를 작성하는 방법은 크게 XML, @Configuration, @Component 등록 세 가지로 나뉜다.
 
-#### XML을 이용한 등록
+### XML을 이용한 등록
 
 ```xml
 <bean id="hello" class="me.yj.test.bean.Hello">
@@ -67,7 +67,7 @@ DispatcherServlet은 자체적으로 ApplicationContext를 생성하고 사용�
 
 Spring Boot가 도입된 후 잘 사용되지 않는다.
 
-#### 자동인식을 이용한 빈 등록
+### 자동인식을 이용한 빈 등록
 
 빈 스캐너는 지정된 클래스패스 밑에 있는 모든 패키지의 클래스를 대상으로 _특정 애노테이션_ 이 존재하는지를 파악하고 빈으로 등록한다. 빈 스캐너에 의해 필터링 되는 애노테이션을 `스테레오타입 애노테이션`이라고 부른다. 주로 사용하는 스테레오 타입 애노테이션은 다음과 같다.
 
@@ -81,13 +81,13 @@ Spring Boot가 도입된 후 잘 사용되지 않는다.
 public class AnnotationHello { }
 ```
 
-#### ComponentScan
+### ComponentScan
 
 컴포넌트 스캔은 `스캔 위치`와 어떤 애노테이션을 스캔할지에 대한 `필터`를 지정할 수 있다. 디폴트 값으로 `@Component`를 포함하는 경우 Bean으로 등록한다. 실제 스캐닝은 `ConfigurationClassPostProcessor` 라는 객체가 수행하며, 이 객체는 `BeanFactoryPostProcessor`를 구현한 객체이다. 당연한 소리이지만, 라이플 사이클로 봤을 때, 빈을 등록하기 이전에 수행된다.
 
 스프링은 어플리케이션을 구동하기 전에 컴포넌트 스캔을 하고 빈을 등록하기 때문에 구동 시간이 길어질 수 있다. 하지만 서비스 시에는 보통 싱글톤 스코프의 빈을 사용하기 때문에 서비스 시간은 짧은 편에 속한다.
 
-#### 자바코드에 의한 빈 등록 : @Configuration, @Bean
+### 자바코드에 의한 빈 등록 : @Configuration, @Bean
 
 ```java
 @Configuration
@@ -109,12 +109,12 @@ public class AnnotatedHelloConfig{
 - @Bean("name")으로 이름을 지정할 수 있으며 이름을 지정하지 않을 시 메서드 명이 id가 된다.
 - new 연산을 사용하지만, 매번 다른 객체가 생성되지 않고 싱글톤으로 DI된다.
 
-### @Autowired/@Inject를 이용한 DI
+## @Autowired/@Inject를 이용한 DI
 
 @Autowired는 의존 객체의 "타입"에 해당하는 빈을 찾아 주입한다.
 스프링만 사용할 코드라면 둘 중 하나를 일관되게 사용하는 것이 좋다. 다만, 다른 환경에서도 사용할 가능성이 있다면 `@Inject`와 `DIJ(Dependency Injection for Java)`에서 정의한 애노테이션을 사용하는 것이 좋다.
 
-#### 사용 방법
+### 사용 방법
 
 `@Autowired`는 Setter, field, constructor에 붙여 사용한다. 스프링 4.3부터는 constructor(생성자)에는 생략이 가능하다.
 
@@ -125,19 +125,19 @@ public class Hello{
 }
 ```
 
-#### 타입이 동일한 빈이 2개 이상인 경우
+### 타입이 동일한 빈이 2개 이상인 경우
 
 `@Primary`, `@Qualifier("name")`, `Collection`을 이용하여 빈을 주입받는다.
 
-##### Primary
+#### Primary
 
 같은 타입의 빈이 여러 개 일 때, 가장 우선순위를 높게 줄 빈을 설정한다. (선호방법)
 
-##### Qualifier
+#### Qualifier
 
 `Qualifier("빈 이름")`으로 어떤 빈을 주입할 지 명시한다.
 
-##### Collection
+#### Collection
 
 같은 타입의 빈을 모두 받아 저장한다.
 
@@ -151,8 +151,56 @@ ArrayList<Printer> printers;
 Map<String, Printer> printerMap;
 ```
 
-#### 동작 원리
+### 동작 원리
 
 ![빈팩토리-생명주기](./images/빈팩토리-생명주기.PNG)
 
 `AutowiredAnnotationBeanPostProcessor`는 `BeanPostProcessor`를 확장한 클래스다. 이 클래스 또한 빈으로 등록되어 있으며, 11번 Life Cycle에서 Bean들에게 있는 @Autowired을 처리하여 DI 로직을 처리해준다.
+
+## 스코프
+
+### 싱글톤
+
+기본적으로 스프링의 빈은 싱글톤으로 만들어진다. 싱글톤으로 생성된 빈의 경우 DI, DL 어떤 경우에도 동일한 오브젝트를 얻어오는 것을 확인할 수 있다. 따라서 싱글톤의 필드에는 의존관계에 있는 빈에 대한 레퍼런스나 읽기전용 값만 저장해두고, DTO와 같은 변수는 파라미터나 리턴값으로 전달하는 것이 바람직하다.
+
+### 프로토타입
+
+프로토타입 스코프는 컨테이너에게 빈을 요청할 때마다 새로운 오브젝트를 생성해준다. 매번 새로운 오브젝트가 필요하면서 DI를 통해 다른 빈을 사용할 수 있어야 한다면 프로토타입의 빈은 적절한 선택이 될 수 있다.
+
+프로토타입 빈 내에서 싱글톤을 DI 받아 사용하는 것에는 아무런 문제가 되지 않지만, 싱글톤 내에서 프로토타입 빈을 DI 받아 사용하려고 하면, **프로토타입이 싱글톤으로 사용되는 문제** 가 발생한다. 이 문제의 해결 방법은 다음과 같이 두 가지가 있다.
+
+#### 1. 매번 DL 방식으로 프로토타입 빈을 새로 만든다.
+
+@Autowired를 이용해 ApplicationContext를 DI 받은 뒤, getBean()을 호출하면 된다. 하지만 이 방법은 코드에 스프링 API가 등장한다는 단점이 있다.
+
+ObjectFactory를 이용하는 방법도 있다. 이 방법은 ApplicationContext에 직접 접근하지 않고 스프링이 제공하는 `ObjectFactory` 라는 빈을 이용하여 빈을 가져올 수 있게 도와준다. 다만, `ObjectFactoryCreatingFactoryBean`에 팩토리 메서드에서 가져올 빈의 이름을 등록해야 한다는 번거로움은 존재한다.
+
+`Provider<T>`를 이용하는 방법도 있다. 이 방법은 ObjectFactory와 거의 유사하게 `<T>` 타입 파라미터와 `get()`이라는 팩토리 메서드를 가진 인터페이스다. OjbectFactory와 유사하지만 `ObjectFactoryCreatingFactoryBean`을 이용해 빈을 등록하지 않아도 되기 때문에 사용이 편리하다.
+
+```java
+@Autowired
+Provider<ServiceRequest> serviceRequestProvider;
+
+public void serviceRequestFormSubmit(HttpServletRequest request){
+    ServiceRequest serviceRequest = this.serviceRequestProvider.get();
+    ...
+}
+```
+
+#### 2. 스코프 프록시(프록시 패턴) 이용하기
+
+![스코프](./images/스코프.PNG)
+
+클라이언트는 `스코프 프록시(Scoped Proxy)` 오브젝트를 실제 스코프 빈처럼 사용하면 프록시에서 현재 스코프에 맞는 실제 빈 오브젝트로 작업을 위임해준다. LoginService의 입장에서는 모두 같은 오브젝트(LoginUser)를 사용하는 것처럼 보이지만, 실제로는 그 뒤에 사용자별로 만들어진 여러 개의 LoginUser가 존재하고, 스코프 프록시는 실제 LoginUser 오브젝트로 클라이언트의 호출을 위임해주는 역할을 해줄 뿐이다. 물론 **스코프 프록시는 실제 스코프 오브젝트인 LoginUser를 상속** 하고 있어서 LoginService에서는 평범한 LoginUser 타입의 오브젝트로 사용할 수 있다.
+
+```java
+@Scope(value="session", proxyMode=ScopedProxyMode.TARGET_CLASS)
+public class LoginUser {}
+```
+
+```java
+public class LoginService{
+    @Autowired
+    LoginUser loginUser;
+}
+```
