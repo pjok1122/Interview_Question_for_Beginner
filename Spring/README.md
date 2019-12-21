@@ -8,6 +8,8 @@ Spring에서 사용되는 `IoC`란 객체가 내부적으로 조작할 객체를
 
 `IoC Container`는 오브젝트의 생성과 관계설정, 사용, 제거 등의 작업을 대신 해준다하여 붙여진 이름이다. 이때, `IoC Container`에 의해 관리되는 오브젝트들은 `Bean` 이라고 부른다. `IoC Container`는 `Bean`을 저장한다고 하여, `BeanFactory` 라고도 불린다. `BeanFactory`는 하나의 인터페이스이며, `Application Context`는 `BeanFactory`의 구현체를 상속받고 있는 인터페이스이다. 실제로 스프링에서 `IoC Container` 라고 불리는 것은 `Application Context`의 구현체이다.
 
+<hr>
+
 ### 설정 메타정보
 
 ![설정메타정보](./images/설정메타정보.PNG)
@@ -36,6 +38,8 @@ StaticApplicationContext는 코드를 통해 빈 메타정보를 등록하기 �
 
 웹 환경에서의 스프링은 클라이언트의 요청을 전부 받는 `FrontController`, `DispatcherServlet`을 제공한다. `DispatcherServlet`는 자체적으로 ApplicationContext를 생성하고, Root Application Context를 부모로 등록한다.
 
+<hr>
+
 ### IoC 컨테이너 계층구조
 
 IoC 컨테이너는 계층구조로 구현할 수 있다. 각자 독립적으로 빈을 갖고 있으며, 자신의 어플리케이션 컨텍스트에 빈이 존재하지 않을 경우, 부모 어플리케이션 컨텍스트에서 빈을 찾는다. 중요한 점은 자식 어플리케이션 컨텍스트에서는 탐색하지 않는다는 점이다.
@@ -47,6 +51,8 @@ IoC 컨테이너는 계층구조로 구현할 수 있다. 각자 독립적으로
 ![웹환경애플리케이션2](./images/웹환경애플리케이션2.PNG)
 
 DispatcherServlet은 자체적으로 ApplicationContext를 생성하고 사용한다. 이를 `ServletContext` 라고도 부른다. 이외에도 RootApplicationContext가 하나 존재하는데, 이는 스프링 외의 기술을 사용하는 Ajax Engine, JSP 등에서 Spring IoC의 기능을 사용할 수 있도록 하기 위함이다. 스프링 밖의 어디서라도 `WebApplicationContextUtils.getWebApplicationContext(ServletContext sc)` 를 호출하면 루트 어플리케이션 컨텍스트를 가져올 수 있다.
+
+<hr>
 
 ## 빈 설정 / DI
 
@@ -109,6 +115,8 @@ public class AnnotatedHelloConfig{
 - @Bean("name")으로 이름을 지정할 수 있으며 이름을 지정하지 않을 시 메서드 명이 id가 된다.
 - new 연산을 사용하지만, 매번 다른 객체가 생성되지 않고 싱글톤으로 DI된다.
 
+<hr>
+
 ## @Autowired/@Inject를 이용한 DI
 
 @Autowired는 의존 객체의 "타입"에 해당하는 빈을 찾아 주입한다.
@@ -157,6 +165,8 @@ Map<String, Printer> printerMap;
 
 `AutowiredAnnotationBeanPostProcessor`는 `BeanPostProcessor`를 확장한 클래스다. 이 클래스 또한 빈으로 등록되어 있으며, 11번 Life Cycle에서 Bean들에게 있는 @Autowired을 처리하여 DI 로직을 처리해준다.
 
+<hr>
+
 ## 스코프
 
 ### 싱글톤
@@ -204,3 +214,68 @@ public class LoginService{
     LoginUser loginUser;
 }
 ```
+
+<hr>
+
+### 런타임 환경과 프로파일
+
+스프링 3.1에서는 런타임 환경 마다 빈 설정을 다르게 할 수 있는 기능이 추가됐다. 개발환경, 배포환경에 따라서 빈 설정이 달라져야 하는 경우 프로파일을 이용한다.
+
+#### 프로파일 지정
+
+환경에 따라 달라져야 하는 빈에 `@Profile("환경이름")` 애노테이션을 붙이면, 해당 빈은 Active Profile인 경우에만 빈이 생성된다.
+
+```java
+@Configuration
+@Profile("test")
+```
+
+```java
+@Component
+@Profile("!test")
+```
+
+프로파일 이름에는 `!(not), &(and), |(or)` 논리연산자를 사용할 수 있다.
+
+#### 활성 프로파일 설정
+
+특정 프로파일에 정의된 빈을 사용하고 싶으면 해당 프로파일을 활성(active) 프로파일로 만들어줘야 한다. 활성 프로파일을 지정할 시스템 프로퍼티의 이름은 `spring.profiles.active` 이다.
+
+- WAS 시동 스크립트에서 spring.prifles.active에 `test`를 넣고 WAS를 시작하는 방법
+- JVM의 커맨드라인 파라미터를 이용해 `-Dspring.profiles.active=test`를 호출하는 방법
+  \*\* application.properties에 `spring.profiles.active=test`를 입력하는 방법
+
+현재 활성화된 프로파일을 확인할 때에는 `ApplicationContext.getEnvironment().getActiveProfiles()` 를 호출하면 된다.
+
+#### 런타임환경과 프로퍼티
+
+프로퍼티란 키-밸류 형식의 데이터를 의미한다. JDBC나 DataSource를 사용할 때 설정했던 정보들은 보통 프로퍼티로 저장해둔다. 스프링이 제공해주는 application.properties에 프로퍼티를 생성하는 방법 외에도, 다양한 프로퍼티 지정이 가능하다. 참고만 하자.
+
+- 환경변수 (OS)
+- 시스템 프로퍼티 (JVM) : -Dkey="value"
+- JDNI : java:comp/env/
+- ServletContext 매개변수
+- ServletConfig 매개변수
+
+별도의 properties 파일을 생성하는 경우, `@PropertySource`를 이용해 프로퍼티 파일을 등록할 수 있다.
+
+```java
+@Configuration
+@PropertySource("classpath:/database.properties")
+public class AppConfig{
+```
+
+<hr>
+
+## IoC 요약
+
+- 스프링 애플리케이션은 POJO 클래스와 빈 설정 메타정보로 구성된다.
+- 빈 설정 메타정보는 특정 포맷의 파일이나 리소스에 종속되지 않는다. 필요하다면 새로운 설정정보 작성 방법을 얼마든지 만들어 사용할 수 있다.
+- 스프링의 빈 등록 방법은 크게 XML, 빈 자동인식, 자바 코드 세 가지로 구분할 수 있다.
+- 스프링의 빈 의존관계 설정은 XML, 애노테이션, 자바 코드로 구분할 수 있다.
+- 프로퍼티 값은 단순히 키-밸류 데이터이다. 빈에 주입되지 않는다.
+- 프로퍼티 값 중에서 환경에 따라 자주 바뀌는 것은 프로퍼티 파일과 같은 별도의 리소스 형태로 분리해놓는 것이 좋다.
+- 빈의 스코프는 싱글톤과 프로포타입 그리고 기타 스코프로 구분할 수 있다.
+- 프로토타입과 싱글톤이 아닌 스코프 빈은 DL 방식을 이용하거나, 스코프 프록시 빈을 DI 받는 방법을 사용해야 한다. `(프록시 패턴)`
+- 스프링 3.1은 **애노테이션과 자바 코드를 이용한 빈 메타정보 작성 기능** 을 발전시켜 자바 코드만으로도 스프링 애플리케이션의 모든 빈 설정이 가능하게 해준다.
+- 스프링 3.1의 **프로파일과 프로퍼티 소스로 이뤄진 런타임 환경 추상화 기능** 을 이용하면 환경에 따라 달라지는 빈 구성과 속성 지정 문제를 손쉽게 다룰 수 있다.
