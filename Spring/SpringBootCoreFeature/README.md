@@ -46,6 +46,10 @@ public class Ex3SpringInitApplication {
 }
 ```
 
+또는 application.properties 설정에 다음과 같이 작성.
+
+`spring.main.web-application-type=none`
+
 ### Application Arguments 사용
 
 Application Arguments는 `--`를 붙여서 전달하면 된다. (참고로 JVM에 넘겨주는 인자는 `-D`를 붙여서 사용한다.) 이 값을 애플리케이션에서 읽어들이고 싶을 때에는 ApplicationArguments를 사용하면 된다. 이 객체는 빈으로 등록되어 있어 손쉽게 사용이 가능하다.
@@ -209,6 +213,37 @@ _\* 참고) nano second부터 day를 의미한다._
 <hr>
 
 ## 프로파일
+
+프로파일은 IoC-Container에서도 한 번 살펴봤다. [참고](../IoC-Container/README.md)
+
+프로파일은 런타임 환경마다 빈 설정파일을 다르게 줄 수 있는 기능이다.
+
+### @Profile
+
+특정 프로파일에만 실행되도록 설정할 때 `@Profile("이름")` 애노테이션을 붙여주기만 하면 된다. 이 애노테이션을 사용하는 곳은 `@Configuration` 과 `@Component`가 붙은 곳이다. 즉, 컴포넌트 스캔 대상에다가 붙여 사용한다.
+
+### 프로파일 활성화
+
+프로파일 활성화 하는 방법은 `spring.profiles.active` 라는 프로퍼티를 활용하면 된다.
+
+- `application.properties`에 프로퍼티 설정하는 방법
+- `-Dspring.profiles.active=prod`
+- `--spring.profiles.active=prod`
+
+### 프로파일 Include
+
+프로파일 내에서 프로파일을 추가할 수 있다.
+
+`spring.profiles.include=test` 라고 프로퍼티를 줬을 때, `resource/application-test.properties`가 추가된다.
+test 프로파일의 빈 또한 사용 가능하다.
+
+### 프로파일용 Properties
+
+프로파일마다 Properties를 적용할 수 있다. 예를 들어, 현재 활성된 프로파일이 `prod`라고 하자. 이때 `application-prod.properties`가 정의되어있다면, 이 프로퍼티를 사용한다. 만약 application.properties와 application-prod.properties에 동일한 프로퍼티가 정의되어있다면 prod 프로퍼티가 우선순위가 더 높다.
+
+- `application-{profile}.properties`
+
+<hr>
 
 ## 로깅
 
