@@ -16,6 +16,8 @@ class Stack:
         self.top = -1
 
     def push(self, val):
+        if(self.top > SIZE - 2):
+            return None
         self.top += 1
         self.arr[self.top] = val
 
