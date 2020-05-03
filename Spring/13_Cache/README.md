@@ -193,5 +193,5 @@ spring.cache.cache-names=cache1,cache2
 spring.cache.redis.time-to-live=600000
 ```
 
-`@EnableCaching` 애노테이션만 추가하면 자동으로 redis를 잡는다.
+`@EnableCaching` 애노테이션만 추가하면 자동으로 localhost에 있는 redis와 연결하는 것 같다. 
 
