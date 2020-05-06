@@ -4,7 +4,7 @@
   - [JVM 에 대해서, GC 의 원리](#jvm-%EC%97%90-%EB%8C%80%ED%95%B4%EC%84%9C-gc-%EC%9D%98-%EC%9B%90%EB%A6%AC)
   - [Collection](#collection)
   - [Annotation](#annotation)
-      - [Reference](#reference)
+    - [Reference](#reference)
   - [Generic](#generic)
   - [final keyword](#final-keyword)
   - [Overriding vs Overloading](#overriding-vs-overloading)
@@ -17,18 +17,87 @@
     - [ThreadLocal](#threadlocal)
       - [Personal Recommendation](#personal-recommendation)
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)
 
 </br>
 
-## JVM 에 대해서, GC 의 원리
+## JVM
 
-그림과 함께 설명해야 하는 부분이 많아 링크를 첨부합니다.
+> JVM은 자바 가상 머신의 약자로, 자바 어플리케이션을 실행하는 것을 도와주고 메모리 관리 또한 도와준다. JVM은 JAVA와 OS 사이에서 중개자 역할을 하기 때문에 JAVA가 OS에 구애받지 않고 동작할 수 있도록 한다.
 
-* [Java Virtual Machine 에 대해서](http://asfirstalways.tistory.com/158)
-* [Garbage Collection 에 대해서](http://asfirstalways.tistory.com/159)
+### 자바 프로그램 수행 과정
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-2-1-java)
+![JVM](./images/JVM.png)
+
+1. 프로그램이 실행되면 JVM은 OS로부터 프로그램이 필요로 하는 메모리를 할당받는다.
+2. 자바 컴파일러(javac)가 자바 소스코드(.java)를 읽어들여 바이트 코드(.class)로 변환시킨다.
+3. Class Loader를 통해 class 파일을 JVM으로 로딩한다.
+4. Loading 된 파일들은 Excution engine을 통해 해석된다.
+5. 해석된 바이트 코드는 Runtime Data Area로 배치되어 실질적인 수행이 이루어진다.  
+   이러한 과정 속에서 JVM은 필요에 따라 Thread Synchronization과 GC와 같은 작업을 수행한다.
+
+### JVM의 구성
+
+#### Class Loader
+
+JVM 내로 class 파일을 로드하고, 링크를 통해 배치하는 작업을 수행한다.
+
+#### Execution engine
+
+클래스를 실행하는 역할을 한다. 클래스 로더가 JVM 내의 런타임 데이터 영역에 바이트 코드를 배치시키고, 이것은 실행 엔진에 의해 실행된다. 바이트 코드는 완전한 기계어가 아니므로, 기계어로 번역하는 과정이 필요하다. 이 때 Interpreter와 JIT 두 가지 방식을 사용할 수 있다.
+
+#### Interpreter
+
+실행 엔진은 자바 바이트 코드를 명령어 단위로 읽어서 실행한다. 하지만 이 방식은 인터프리터의 단점을 그대로 가지고 있다. 즉, 한 줄씩 수행하기 때문에 수행 속도가 느리다.
+
+#### JIT(Just In Time)
+
+인터프리터 방식을 보완하기 위해 도입된 JIT 컴파일러이다. 인터프리터 방식으로 실행하다가 적절한 시점에 바이트코드 전체를 컴파일하여 Native Code로 변경하고, 이후에는 더 이상 인터프리팅 하지 않고 네이티브 코드로 직접 실행하는 방식이다. 네이티브 코드는 캐시에 보관하기 때문에 한 번 컴파일된 코드는 빠르게 수행한다.
+
+#### GC(Garbage Collector)
+
+사용되지 않는 자원을 메모리에서 내쫓는 역할을 하는 쓰레드가 존재한다.
+
+#### PC Register
+
+쓰레드가 수행할 다음 명령어의 주소를 가리킨다.
+
+#### JVM 스택 영역
+
+프로그램 수행 과정에서 임시로 할당되었다가 메소드를 빠져나가면 바로 소멸되는 특성의 데이터를 저장하는 영역이다.  
+_ex) 매개변수, 지역변수, 리턴 값 등.._
+
+#### Native Method stack
+
+실제 수행할 수 있는 기계어로 작성된 프로그램을 실행시키는 영역이다.
+
+#### Method Area (= class area = static area)
+
+클래스 정보를 처음 메모리 공간에 올릴 때 초기화되는 대상을 저장하기 위한 메모리 공간.
+
+_ref) Method Area는 클래스를 위한 공간이지만, Heap은 객체를 위한 공간이다. 두 영역 모두 GC의 관리 영역이다._
+
+#### Heap Area
+
+![java_heap](./images/java_heap.png)
+
+객체를 저장하는 가상 메모리 공간이다. new 연산자로 생성된 객체와 배열을 저장한다. class Area에 올라온 클래스들만 객체로 생성이 가능하다. 힙은 세 부분으로 나뉜다.
+
+##### New/Young 영역
+
+- Eden : 객체들이 최초로 생성되는 공간
+- Survivor 0 / 1 : Eden에서 참조되는 객체들이 저장되는 공간
+
+##### Old 영역
+
+Eden 영역이 가득찼을 때, GC(minor GC)가 발생한다. 이 때, Eden 영역에 있는 값들을 Survivor 영역으로 이동시킨다. 이 과정을 반복하다가 계속해서 살아남은 객체는 Old 영역으로 이동시킨다.
+
+##### Reference
+
+- [Java Virtual Machine 에 대해서](http://asfirstalways.tistory.com/158)
+- [Garbage Collection 에 대해서](http://asfirstalways.tistory.com/159)
+
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-2-1-java)
 
 </br>
 
@@ -36,16 +105,16 @@
 
 Java Collection 에는 `List`, `Map`, `Set` 인터페이스를 기준으로 여러 구현체가 존재한다. 이에 더해 `Stack`과 `Queue` 인터페이스도 존재한다. 왜 이러한 Collection 을 사용하는 것일까? 그 이유는 다수의 Data 를 다루는데 표준화된 클래스들을 제공해주기 때문에 DataStructure 를 직접 구현하지 않고 편하게 사용할 수 있기 때문이다. 또한 배열과 다르게 객체를 보관하기 위한 공간을 미리 정하지 않아도 되므로, 상황에 따라 객체의 수를 동적으로 정할 수 있다. 이는 프로그램의 공간적인 효율성 또한 높여준다.
 
-* List  
+- List  
   `List` 인터페이스를 직접 `@Override`를 통해 사용자가 정의하여 사용할 수도 있으며, 대표적인 구현체로는 `ArrayList`가 존재한다. 이는 기존에 있었던 `Vector`를 개선한 것이다. 이외에도 `LinkedList` 등의 구현체가 있다.
-* Map  
+- Map  
   대표적인 구현체로 `HashMap`이 존재한다. (밑에서 살펴볼 멀티스레드 환경에서의 개발 부분에서 HashTable 과의 차이점에 대해 살펴본다.) key-value 의 구조로 이루어져 있으며 Map 에 대한 구체적인 내용은 DataStructure 부분의 hashtable 과 일치한다. key 를 기준으로 중복된 값을 저장하지 않으며 순서를 보장하지 않는다. key 에 대해서 순서를 보장하기 위해서는 `LinkedHashMap`을 사용한다.
-* Set  
+- Set  
   대표적인 구현체로 `HashSet`이 존재한다. `value`에 대해서 중복된 값을 저장하지 않는다. 사실 Set 자료구조는 Map 의 key-value 구조에서 key 대신에 value 가 들어가 value 를 key 로 하는 자료구조일 뿐이다. 마찬가지로 순서를 보장하지 않으며 순서를 보장해주기 위해서는 `LinkedHashSet`을 사용한다.
-* Stack 과 Queue  
+- Stack 과 Queue  
   `Stack` 객체는 직접 `new` 키워드로 사용할 수 있으며, `Queue` 인터페이스는 JDK 1.5 부터 `LinkedList`에 `new` 키워드를 적용하여 사용할 수 있다. 자세한 부분은 DataStructure 부분의 설명을 참고하면 된다.
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-2-1-java)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-2-1-java)
 
 </br>
 
@@ -55,51 +124,51 @@ Java Collection 에는 `List`, `Map`, `Set` 인터페이스를 기준으로 여�
 
 #### Reference
 
-* http://asfirstalways.tistory.com/309
+- http://asfirstalways.tistory.com/309
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-2-1-java)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-2-1-java)
 
 </br>
 
 ## Generic
 
-제네릭은 자바에서 안정성을 맡고 있다고 할 수 있다. 다양한 타입의 객체들을 다루는 메서드나 컬렉션 클래스에서 사용하는 것으로, 컴파일 과정에서 타입체크를 해주는 기능이다. 객체의 타입을 컴파일 시에 체크하기 때문에 객체의 타입 안전성을 높이고 형변환의 번거로움을 줄여준다. 자연스럽게 코드도 더 간결해진다. 예를 들면, Collection 에 특정 객체만 추가될 수 있도록, 또는 특정한 클래스의 특징을 갖고 있는 경우에만 추가될 수 있도록 하는 것이 제네릭이다. 이로 인한 장점은 collection 내부에서 들어온 값이 내가 원하는 값인지 별도의 로직처리를 구현할 필요가 없어진다. 또한 api 를 설계하는데 있어서 보다 명확한 의사전달이 가능해진다.
+제네릭은 자바에서 안정성을 맡고 있다고 할 수 있다. 다양한 타입의 객체들을 다루는 메서드나 컬렉션 클래스에서 사용하는 것으로, **컴파일 과정에서 타입체크** 를 해주는 기능이다. 객체의 타입을 컴파일 시에 체크하기 때문에 객체의 타입 안전성을 높이고 형변환의 번거로움을 줄여준다. 자연스럽게 코드도 더 간결해진다. 예를 들면, Collection 에 특정 객체만 추가될 수 있도록, 또는 특정한 클래스의 특징을 갖고 있는 경우에만 추가될 수 있도록 하는 것이 제네릭이다. 이로 인한 장점은 **collection 내부에서 들어온 값이 내가 원하는 값인지 별도의 로직처리를 구현할 필요가 없어진다.** 또한 api 를 설계하는데 있어서 보다 명확한 의사전달이 가능해진다.
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-2-1-java)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-2-1-java)
 
 </br>
 
 ## final keyword
 
-* final class  
+- final class  
   다른 클래스에서 상속하지 못한다.
 
-* final method  
+- final method  
   다른 메소드에서 오버라이딩하지 못한다.
 
-* final variable  
+- final variable  
   변하지 않는 상수값이 되어 새로 할당할 수 없는 변수가 된다.
 
 추가적으로 혼동할 수 있는 두 가지를 추가해봤다.
 
-* finally  
+- finally  
   `try-catch` or `try-catch-resource` 구문을 사용할 때, 정상적으로 작업을 한 경우와 에러가 발생했을 경우를 포함하여 마무리 해줘야하는 작업이 존재하는 경우에 해당하는 코드를 작성해주는 코드 블록이다.
 
-* finalize()  
+- finalize()  
   keyword 도 아니고 code block 도 아닌 메소드이다. `GC`에 의해 호출되는 함수로 절대 호출해서는 안 되는 함수이다. `Object` 클래스에 정의되어 있으며 GC 가 발생하는 시점이 불분명하기 때문에 해당 메소드가 실행된다는 보장이 없다. 또한 `finalize()` 메소드가 오버라이딩 되어 있으면 GC 가 이루어질 때 바로 Garbage Collecting 되지 않는다. GC 가 지연되면서 OOME(Out of Memory Exception)이 발생할 수 있다.
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-2-1-java)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-2-1-java)
 
 </br>
 
 ## Overriding vs Overloading
 
-* 오버라이딩(Overriding)  
+- 오버라이딩(Overriding)  
   상위 클래스에 존재하는 메소드를 하위 클래스에서 필요에 맞게 재정의하는 것을 의미한다.
-* 오버로딩(Overloading)
-  상위 클래스의 메소드와 이름, return 값은 동일하지만, 매개변수만 다른 메소드를 만드는 것을 의미한다. 다양한 상황에서 메소드가 호출될 수 있도록 한다.
+- 오버로딩(Overloading)
+  상위 클래스의 메소드와 이름은 동일하지만 매개변수 타입,개수,순서만 다른 메소드를 만드는 것을 의미한다. 다양한 상황에서 메소드가 호출될 수 있도록 한다.
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-2-1-java)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-2-1-java)
 
 </br>
 
@@ -107,19 +176,19 @@ Java Collection 에는 `List`, `Map`, `Set` 인터페이스를 기준으로 여�
 
 변수 또는 메소드의 접근 범위를 설정해주기 위해서 사용하는 Java 의 예약어를 의미하며 총 네 가지 종류가 존재한다.
 
-* public  
+- public  
   어떤 클래스에서라도 접근이 가능하다.
 
-* protected  
+- protected  
   클래스가 정의되어 있는 해당 패키지 내 그리고 해당 클래스를 상속받은 외부 패키지의 클래스에서 접근이 가능하다.
 
-* (default)  
+- (default)  
   클래스가 정의되어 있는 해당 패키지 내에서만 접근이 가능하도록 접근 범위를 제한한다.
 
-* private  
+- private  
   정의된 해당 클래스에서만 접근이 가능하도록 접근 범위를 제한한다.
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-2-1-java)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-2-1-java)
 
 </br>
 
@@ -138,7 +207,7 @@ lists.add(1);
 
 우린 `Integer`라는 Wrapper class 로 설정한 collection 에 데이터를 add 할 때 Integer 객체로 감싸서 넣지 않는다. 자바 내부에서 `AutoBoxing`해주기 때문이다.
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-2-1-java)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-2-1-java)
 
 </br>
 
@@ -174,14 +243,14 @@ _ThreadLocal 을 사용하는 방법은 간단하다._
 3.  ThreadLocal.get() 메서드를 이용해서 현재 스레드의 로컬 변수 값을 읽어온다.
 4.  ThreadLocal.remove() 메서드를 이용해서 현재 스레드의 로컬 변수 값을 삭제한다.
 
-[뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-2-1-java)
+[뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-2-1-java)
 
 </br>
 
 #### Personal Recommendation
 
-* (도서) [Effective Java 2nd Edition](http://www.yes24.com/24/goods/14283616?scode=032&OzSrank=9)
-* (도서) [스프링 입문을 위한 자바 객체 지향의 원리와 이해](http://www.yes24.com/24/Goods/17350624?Acode=101)
+- (도서) [Effective Java 2nd Edition](http://www.yes24.com/24/goods/14283616?scode=032&OzSrank=9)
+- (도서) [스프링 입문을 위한 자바 객체 지향의 원리와 이해](http://www.yes24.com/24/Goods/17350624?Acode=101)
 
 [뒤로](https://github.com/JaeYeopHan/for_beginner)/[위로](#part-2-1-java)
 

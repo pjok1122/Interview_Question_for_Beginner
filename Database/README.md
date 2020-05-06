@@ -459,19 +459,85 @@ Deadlock 이 발생한다. 일반적인 DBMS는 교착상태를 독자적으로 
 
 트랜잭션이 처리중이거나, 아직 Commit 되지 않은 데이터를 다른 트랜잭션이 읽을 수 있다.
 
+**Dirty Read**
+
+트랜잭션A가 `(1, 철수)` 라는 데이터를 `(1, 길동)`으로 업데이트하고 아직 commit을 하지 않았다고 해보자. 이때 트랜잭션 B가 id가 `1`인 데이터에 접근하면, `(1, 철수)`를 얻게 된다. 그런데, 트랜잭션A가 Rollback을 수행한다면 트랜잭션B는 잘못된 데이터를 읽게 된다. 이런 현상을 `Dirty Read`라고 한다.
+
 ##### 2. Read Commited (레벨 1)
 
-트랜잭션이 수행되는 동안 다른 트랜잭션이 접근할 수 없어 대기하게 된다. Commit이 수행된 데이터에만 접근이 가능하다. (Default isolation level)
+트랜잭션이 수행되는 동안 다른 트랜잭션이 접근할 수 없어 대기하게 된다. Commit이 수행된 데이터에만 접근이 가능하고 Commit이 안된 데이터에는 UNDO 영역에 백업된 데이터를 참조한다. RDB에서 가장 많이 쓰는 `default isolation level`이다.
+
+**Dirty Read 해결**
+
+트랜잭션A가 `(1, 철수)` 라는 데이터를 `(1, 길동)`으로 업데이트하고 아직 commit을 하지 않았다고 해보자. 이때 트랜잭션 B가 id가 `1`인 데이터에 접근하면, `(1, 길동)`이 아닌 `(1, 철수)`를 얻게 된다. 이때 테이블에서 값을 가져오는 것이 아니라, `UNDO` 영역에 백업된 데이터를 가져오는 것이다.
+
+**REPEATABLE READ에서 문제 발생**
+
+`REPEATABLE READ`란 한 트랜잭션 내에서 같은 질의를 수행했을 때, 똑같은 결과를 얻어야 한다는 조건이다.
+
+트랜잭션A가 `(1, 철수)` 라는 데이터를 `(1, 길동)`으로 업데이트하고 아직 commit을 하지 않았다고 해보자. 이때 트랜잭션 B가 id가 `1`인 데이터에 접근하면, `(1, 길동)`이 아닌 UNDO 영역에서 `(1, 철수)`를 얻게 된다. 그런데, 트랜잭션A가 commit을 호출하고, 트랜잭션 B가 이어서 id가 `1`인 데이터를 다시 조회한다면, `(1, 길동)`을 얻게 되므로 `REPEATABLE READ` 정합성이 깨지게 된다. 
 
 ##### 3. Repeatable Read (레벨 2)
 
-트랜잭션이 질의하는 모든 데이터에 Shared Lock이 걸린다. 따라서 트랜잭션의 특정 row에 대한 변경이 끝났어도 다른 트랜잭션은 접근할 수 없다.
+트랜잭션이 질의하는 모든 데이터에 `Shared Lock`이 걸린다. `Shared Lock`은 읽기는 가능하지만 변경은 불가능하게 하는 Lock을 의미한다.
+
+트랜잭션A가 `(1, 철수)` 라는 데이터를 `(1, 길동)`으로 업데이트하고 아직 commit을 하지 않았다고 해보자. 트랜잭션A는 id가 `1`인 데이터에 `Exclusive Lock`을 걸어놓은 상태다. 트랜잭션B가 `id`에 `Shared Lock`을 걸고자 하지만 `Exclusive Lock`이 있어, 락을 걸 수가 없다. 트랜잭션A가 끝난 후에 트랜잭션B가 `Shared Lock`을 걸어도 되지만, 이는 성능저하로 이어질 수 밖에 없다.
+
+**MVCC**
+
+이를 해소하기 위해 `MVCC(Multi-Version Concurrency Control)`라는 매커니즘이 등장했다. MVCC 모델에서 트랜잭션은 수행하기 전에 데이터의 스냅샷을 가져온다. 트랜잭션이 변경된 내용은 테이블에 반영하는 것이 아니라, 새로운 버전의 데이터를 UNDO 영역에 생성한다. 따라서 UNDO 영역에는 여러 버전의 데이터가 존재하게 되고, 새로운 트랜잭션은 마지막 버전의 데이터를 읽게 된다.
+
+Locking 전략보다는 매우 빠르며, 다른 트랜잭션에서 동시에 데이터를 수정하거나 삭제해도 영향을 받지 않는다. 하지만 UNDO 영역에 사용하지 않는 데이터가 계속 쌓이므로 데이터를 정리하는 시스템이 필요하다. MySQL, Oracle 모두 MVCC 매커니즘을 사용하고 있으며, MVCC를 사용하면 `Dirty Read`, `Repeatable Read`, `Phantom Read` 어느 것도 발생하지 않는다. `SQL 표준 isolation`에서는 `Repeatable Read`를 사용할 경우 `Phantom Read`가 발생한다.
+
+**Phantom Read**
+
+트랜잭션B가 테이블에 있는 데이터의 개수를 조회했고, 이때 개수가 2개였다고 해보자. 트랜잭션B는 아직 commit을 하지 않았기 때문에 데이터의 개수를 조회하는 쿼리를 수차례 보내도 데이터는 2개여야 한다. 하지만, 트랜잭션A가 데이터를 2개 추가하고 커밋한다면, 트랜잭션B는 다시 질의했을 때, 데이터의 개수가 4개로 증가한다. 이렇게 귀신을 읽게 되는(?) 것이 `Phantom Read`다. 
+
+
+**참고**
+
+MVCC에서 트랜잭션이 Snapshot을 가져와 사용하기 때문에 3가지 문제점에 모두 안전하기는 하나, 이는 조회로 한정지었을때만 그렇다. 솔직히 현실적이진 않은데 수정에 대해서는 `Phantom Update`는 가능하다. Phantom Update는 그냥 내가 이름을 붙여봤다. 이미 있을지도 모름..ㅎ
+
+```sql
+START TRANSACTION; -- transaction id : 1
+SELECT * FROM Member WHERE name='before';
+
+    START TRANSACTION; -- transaction id : 2
+    SELECT * FROM Member WHERE name = 'before';
+    UPDATE Member SET name = 'after' WHERE name = 'before';
+    COMMIT;
+
+UPDATE Member SET name = 'new_after' WHERE name = 'before'; -- 0 row(s) affected
+COMMIT;
+```
+
+트랜잭션2가 `before`를 `after`로 바꿨기 때문에 트랜잭션1이 `before`을 `new_after`로 바꾸려해도 동작하지 않는다.
+
+```sql
+START TRANSACTION; -- transaction id : 1 
+SELECT * FROM Member; -- 0건 조회
+
+    START TRANSACTION; -- transaction id : 2
+    INSERT INTO MEMBER VALUES(1,'yj',28);
+    COMMIT;
+
+SELECT * FROM Member; -- 여전히 0건 조회 
+UPDATE Member SET name = 'youngjae' WHERE id = 1; -- 1 row(s) affected
+SELECT * FROM Member; -- 1건 조회 
+COMMIT;
+```
+
+트랜잭션1의 조회결과에는 아무것도 없지만, 트랜잭션2가 삽입해놓은 데이터를 수정하는 것은 가능하다.
+
+
 
 ##### 4. Serializable (레벨 3)
 
-완벽한 읽기 일관성 모드를 제공함
+완벽한 읽기 일관성 모드를 제공한다. 다른 사용자는 트랜잭션 영역에 해당되는 데이터에 대한 수정 및 입력 불가능.
 
-다른 사용자는 트랜잭션 영역에 해당되는 데이터에 대한 수정 및 입력 불가능
+`SELECT` 호출 시 자동으로 `SELECT ... FOR SHARE`가 쿼리가 발생하고, 인덱스가 없을 경우 테이블 전체에 대한 Lock을 건다.
+
+데이터베이스에서는 일반적으로 사용하지 않는다.
 
 [뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-1-5-database)
 
