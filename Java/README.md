@@ -1,20 +1,42 @@
 # Part 2-1 Java
 
 - [Part 2-1 Java](#part-2-1-java)
-  - [JVM 에 대해서, GC 의 원리](#jvm-%EC%97%90-%EB%8C%80%ED%95%B4%EC%84%9C-gc-%EC%9D%98-%EC%9B%90%EB%A6%AC)
+  - [JVM](#jvm)
+    - [자바 프로그램 수행 과정](#%ec%9e%90%eb%b0%94-%ed%94%84%eb%a1%9c%ea%b7%b8%eb%9e%a8-%ec%88%98%ed%96%89-%ea%b3%bc%ec%a0%95)
+    - [JVM의 구성](#jvm%ec%9d%98-%ea%b5%ac%ec%84%b1)
+      - [Class Loader](#class-loader)
+      - [Execution engine](#execution-engine)
+      - [Interpreter](#interpreter)
+      - [JIT(Just In Time)](#jitjust-in-time)
+      - [GC(Garbage Collector)](#gcgarbage-collector)
+      - [PC Register](#pc-register)
+      - [JVM 스택 영역](#jvm-%ec%8a%a4%ed%83%9d-%ec%98%81%ec%97%ad)
+      - [Native Method stack](#native-method-stack)
+      - [Method Area (= class area = static area)](#method-area--class-area--static-area)
+      - [Heap Area](#heap-area)
+        - [New/Young 영역](#newyoung-%ec%98%81%ec%97%ad)
+        - [Old 영역](#old-%ec%98%81%ec%97%ad)
+        - [Reference](#reference)
+  - [객체지향 프로그래밍](#%ea%b0%9d%ec%b2%b4%ec%a7%80%ed%96%a5-%ed%94%84%eb%a1%9c%ea%b7%b8%eb%9e%98%eb%b0%8d)
+    - [특징](#%ed%8a%b9%ec%a7%95)
   - [Collection](#collection)
   - [Annotation](#annotation)
-    - [Reference](#reference)
+      - [Reference](#reference-1)
   - [Generic](#generic)
   - [final keyword](#final-keyword)
   - [Overriding vs Overloading](#overriding-vs-overloading)
   - [Access Modifier](#access-modifier)
   - [Wrapper class](#wrapper-class)
     - [AutoBoxing](#autoboxing)
-  - [Multi-Thread 환경에서의 개발](#multi-thread-%ED%99%98%EA%B2%BD%EC%97%90%EC%84%9C%EC%9D%98-%EA%B0%9C%EB%B0%9C)
+  - [static](#static)
+  - [String](#string)
+  - [String - equals](#string---equals)
+  - [Multi-Thread 환경에서의 개발](#multi-thread-%ed%99%98%ea%b2%bd%ec%97%90%ec%84%9c%ec%9d%98-%ea%b0%9c%eb%b0%9c)
     - [Field member](#field-member)
-    - [동기화(Synchronized)](#%EB%8F%99%EA%B8%B0%ED%99%94synchronized)
+    - [동기화(Synchronized)](#%eb%8f%99%ea%b8%b0%ed%99%94synchronized)
     - [ThreadLocal](#threadlocal)
+    - [String, StringBuilder, StringBuffer](#string-stringbuilder-stringbuffer)
+    - [abstract vs interface](#abstract-vs-interface)
       - [Personal Recommendation](#personal-recommendation)
 
 [뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)
@@ -98,6 +120,30 @@ Eden 영역이 가득찼을 때, GC(minor GC)가 발생한다. 이 때, Eden 영
 - [Garbage Collection 에 대해서](http://asfirstalways.tistory.com/159)
 
 [뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-2-1-java)
+
+</br>
+
+## 객체지향 프로그래밍
+
+변수와 메서드를 유기적으로 결합하여 하나의 객체로 만들고, 각 객체 간의 통신을 통해 프로그래밍을 수행하도록 로직을 구성하는 프로그래밍 기법이다.
+
+**장점**
+
+- 코드의 재사용성이 높다. (상속)
+- 유지보수가 쉽다. (클래스 단위의 유지보수)
+- 대형 프로젝트에 적합하다. (분업에 용이)
+
+**단점**
+
+- 처리 속도가 오래걸린다.
+- 객체가 많으면 용량이 커질 수 있다.
+- 설계 시 많은 노력이 필요하다.
+
+### 특징
+
+- 캡슐화 : 속성(field)과 행위(method)를 하나로 묶고, 불필요한 내용은 숨기는 것(private)을 말한다.
+- 상속 : 부모 클래스의 특성을 자식에서 이어받는 것을 말한다. 코드의 재사용성이 높아진다.
+- 다형성 : 객체가 하나의 타입으로 고정되는 것이 아니라, 상황에 따라서 여러 타입을 가질 수도 있다는 뜻이다.
 
 </br>
 
@@ -211,6 +257,42 @@ lists.add(1);
 
 </br>
 
+## static
+
+static 변수는 static area(method area or class area)에 딱 하나만 생성되며, 클래스의 인스턴스들이 모두 공유하게 된다. 인스턴스가 생성되지 않아도 static 변수에 접근할 수 있다.
+
+## String
+
+`String`의 생성 방법은 2가지다. `literal`을 이용한 생성과 `new` 키워드를 이용한 객체 생성이다. `new` 키워드를 사용하면 매번 다른 객체를 생성하게 되고, `String a ="123"`과 같이 literal을 사용하면 `String constant pool`에 객체를 생성하고 그 객체를 가져온다. Java 7 이후에는 두 방식 모두 heap 영역을 사용한다는 공통점이 있지만, literal을 이용한 방식은 constant pool에 이미 해당하는 객체가 있을 경우, 그 객체를 반환한다. 이는 Java가 내부적으로 `object.intern("123")` 이라는 메서드를 사용하기 때문에 가능한 일이다. constant pool은 GC의 대상이며 `-xx:StringTableSize`로 크기를 지정할 수 있다.
+
+## String - equals
+
+String의 equals는 내부적으로 char를 하나씩 꺼내어 비교하는 방식으로 이루어져있다.
+
+```java
+public boolean equals(Object anObject) {
+      if (this == anObject) {
+          return true;
+      }
+      if (anObject instanceof String) {
+          String anotherString = (String) anObject;
+          int n = value.length;
+          if (n == anotherString.value.length) {
+              char v1[] = value;
+              char v2[] = anotherString.value;
+              int i = 0;
+              while (n-- != 0) {
+                  if (v1[i] != v2[i])
+                          return false;
+                  i++;
+              }
+              return true;
+          }
+      }
+      return false;
+  }
+```
+
 ## Multi-Thread 환경에서의 개발
 
 개발을 시작하는 입장에서 멀티 스레드를 고려한 프로그램을 작성할 일이 별로 없고 실제로 부딪히기 힘든 문제이기 때문에 많은 입문자들이 잘 모르고 있는 부분 중 하나라고 생각한다. 하지만 이 부분은 정말 중요하며 고려하지 않았을 경우 엄청난 버그를 양산할 수 있기 때문에 정말 중요하다.
@@ -246,6 +328,22 @@ _ThreadLocal 을 사용하는 방법은 간단하다._
 [뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-2-1-java)
 
 </br>
+
+### String, StringBuilder, StringBuffer
+
+String은 `Immutatble` 하기 때문에 +연산 시 새로운 객체를 생성하기 때문에 메모리 공간의 낭비가 심하다. 하지만 Java 5 이후로는 String에 +연산이 있을 경우, 컴파일 타임에 `StringBuilder`로 변경해서 사용한다. 불변 객체이므로 `Thread-safe` 하다는 장점이 있다.
+
+`StringBuilder`와 `StringBuffer`는 `Mutable` 객체이다. 따라서 문자열 연산이 많을 경우 String에 비해 장점이 많다. `StringBuilder`와 `StringBuffer`의 차이점은 `Thread-safe`이다. `StringBuilder`를 사용할 경우 `Thread-safe`하지 않고, `StringBuffer`를 사용할 경우 `Thread-safe`하다.
+
+</br>
+
+### abstract vs interface
+
+추상클래스는 객체를 생성할 수 없는 클래스라고 볼 수 있다. 보통은 추상메서드가 1개 이상일 때 사용하는 것이 일반적이다. 추상클래스를 상속받은 클래스는 추상메서드를 구현하는 것이 강제된다.
+
+인터페이스는 내부에 상수와 추상메서드로만 이루어져 있다. 접근제어자는 모두 public이며, 인터페이스의 구현체는 모든 추상메서드를 구현하는 것이 강제된다.
+
+추상클래스와 인터페이스의 또다른 차이점은 상속이다. Java는 기본적으로 1개의 상속만 가능하지만, 인터페이스의 경우 다중상속(구현)이 가능하다는 장점이 있다.
 
 #### Personal Recommendation
 
