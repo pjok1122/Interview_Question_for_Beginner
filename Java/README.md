@@ -20,6 +20,22 @@
   - [객체지향 프로그래밍](#%ea%b0%9d%ec%b2%b4%ec%a7%80%ed%96%a5-%ed%94%84%eb%a1%9c%ea%b7%b8%eb%9e%98%eb%b0%8d)
     - [특징](#%ed%8a%b9%ec%a7%95)
   - [Collection](#collection)
+    - [List](#list)
+      - [ArrayList](#arraylist)
+      - [LinkedList](#linkedlist)
+      - [Vector](#vector)
+    - [Map](#map)
+      - [HashMap](#hashmap)
+      - [LinkedHashMap](#linkedhashmap)
+      - [TreeMap](#treemap)
+      - [HashTable](#hashtable)
+    - [Set](#set)
+      - [HashSet](#hashset)
+      - [LinkedHashSet](#linkedhashset)
+      - [TreeSet](#treeset)
+    - [Queue](#queue)
+      - [Deque](#deque)
+      - [PriorityQueue](#priorityqueue)
   - [Annotation](#annotation)
       - [Reference](#reference-1)
   - [Generic](#generic)
@@ -151,14 +167,139 @@ Eden 영역이 가득찼을 때, GC(minor GC)가 발생한다. 이 때, Eden 영
 
 Java Collection 에는 `List`, `Map`, `Set` 인터페이스를 기준으로 여러 구현체가 존재한다. 이에 더해 `Stack`과 `Queue` 인터페이스도 존재한다. 왜 이러한 Collection 을 사용하는 것일까? 그 이유는 다수의 Data 를 다루는데 표준화된 클래스들을 제공해주기 때문에 DataStructure 를 직접 구현하지 않고 편하게 사용할 수 있기 때문이다. 또한 배열과 다르게 객체를 보관하기 위한 공간을 미리 정하지 않아도 되므로, 상황에 따라 객체의 수를 동적으로 정할 수 있다. 이는 프로그램의 공간적인 효율성 또한 높여준다.
 
-- List  
-  `List` 인터페이스를 직접 `@Override`를 통해 사용자가 정의하여 사용할 수도 있으며, 대표적인 구현체로는 `ArrayList`가 존재한다. 이는 기존에 있었던 `Vector`를 개선한 것이다. 이외에도 `LinkedList` 등의 구현체가 있다.
-- Map  
-  대표적인 구현체로 `HashMap`이 존재한다. (밑에서 살펴볼 멀티스레드 환경에서의 개발 부분에서 HashTable 과의 차이점에 대해 살펴본다.) key-value 의 구조로 이루어져 있으며 Map 에 대한 구체적인 내용은 DataStructure 부분의 hashtable 과 일치한다. key 를 기준으로 중복된 값을 저장하지 않으며 순서를 보장하지 않는다. key 에 대해서 순서를 보장하기 위해서는 `LinkedHashMap`을 사용한다.
-- Set  
-  대표적인 구현체로 `HashSet`이 존재한다. `value`에 대해서 중복된 값을 저장하지 않는다. 사실 Set 자료구조는 Map 의 key-value 구조에서 key 대신에 value 가 들어가 value 를 key 로 하는 자료구조일 뿐이다. 마찬가지로 순서를 보장하지 않으며 순서를 보장해주기 위해서는 `LinkedHashSet`을 사용한다.
-- Stack 과 Queue  
-  `Stack` 객체는 직접 `new` 키워드로 사용할 수 있으며, `Queue` 인터페이스는 JDK 1.5 부터 `LinkedList`에 `new` 키워드를 적용하여 사용할 수 있다. 자세한 부분은 DataStructure 부분의 설명을 참고하면 된다.
+### List
+
+- `순서`가 있는 데이터를 저장한다.
+- `중복`을 허용한다.
+
+#### ArrayList
+
+- 첫 크기를 10으로 할당하고, 공간이 가득차면 사이즈가 2배인 공간에 복사한다.
+- 기존의 `Vector`를 개선한 클래스이다.
+- 데이터 중간 삽입 시 시간복잡도가 O(n)이다.
+- 검색에 대한 시간복잡도가 O(1)이다.
+- `Thread-safe` 하지 않다. `synchronizedList(List list)`로 동기화처리가 가능하다.
+
+#### LinkedList
+
+- 크기가 정해져있지 않고, 왼쪽과 오른쪽을 참조할 수 있는 `Node`들의 연결로 이루어져있다.
+- `Stack`과 `Queue`의 구현체로 `LinkedList`를 사용할 수 있다.
+- 데이터 앞 뒤 삽입에 대한 시간복잡도는 O(1)이다.
+- 데이터 검색에 대한 시간복잡도는 O(n)이다.
+- `Thread-safe` 하지 않다. `synchronizedList(List list)`로 동기화처리가 가능하다.
+
+#### Vector
+
+- 첫 크기를 10으로 할당하고, 공간이 가득차면 사이즈가 2배인 공간에 복사한다.
+- `ArrayList`의 구버전으로 현재는 사용되지 않는다.
+- `Thread-safe` 하다.
+- `Vector`를 상속한 `Stack`도 존재하는데, 가급적 `LinkedList`를 사용하자.
+
+### Map
+
+- `(key,value) 형식`의 데이터이다.
+- key에 대해 중복을 허용하지 않는다. 이미 존재하는 key일 경우 데이터를 덮어쓴다.
+
+#### HashMap
+
+- `HashMap`에 들어오는 key는 `equals()`와 `hashCode()`를 기준으로 구분한다.
+- `hashCode()`의 값을 Array의 index로 활용하여 배열처럼 사용이 가능하다.
+- `hashCode()`의 값은 int 범위이므로 그냥 사용하게 되면 너무 많은 메모리를 사용해야 한다. 따라서 `int index = X.hashCode() % M`와 같은 방법으로 해시 버킷의 크기를 정할 수 있다.
+- 충돌이 발생했을 때는 `Seperate Chaining` 기법을 사용한다. `get()`에 대한 평균 시간복잡도 : `O(N/M)` (N : 데이터 개수, M : 버킷의 크기)
+- Java8에서는 `Seperate Chaining`을 버킷에 있는 데이터의 개수가 8개 이상이면 `Red-black Tree`로 구현하고 6개 이하면 `LinkedList`로 구현한다. 개수가 증가하고 줄어듦에 따라서 버킷의 구현체도 변경된다.
+- 해시함수의 충돌가능성을 줄이기 위해 `보조 해시 함수`를 사용한다. `int index = X.hashCode() % M` 대신 `int index = X.hashCode() ^ (X.hashCode >> 16)`과 같은 방법을 사용한다. `>>`를 쓰는 이유는 속도가 빠르기 때문.
+
+- `key`로 null을 사용할 수 있다.
+- `get()`에 대한 최적의 시간복잡도 : `O(1)`
+- `get()`에 대한 평균 시간복잡도 : `O(log(N/M))`
+- `put()`에 대한 최적의 시간복잡도 : `O(1)`
+- `put()`에 대한 평균 시간복잡도 : `O(log(N/M))`
+- `Thread-safe` 하지 않다. `Collections.synchronizedMap(Map map)`을 이용해서 동기화 처리가 가능하다.
+
+#### LinkedHashMap
+
+- 입력 순서가 보장되는 HashMap이다.
+- 버킷에 사용되는 LinkedList의 각 Node에는 `before`, `after`, `next`라는 포인터를 둬서 이전에 삽입된 데이터, 이후에 삽입된 데이터, 같은 버킷에 연결된 데이터를 구분할 수 있게 만들었다.
+- 많은 상태정보를 저장해야 하므로 메모리 사용량이 HashMap에 비해 크다.
+
+- `get()`에 대한 최적의 시간복잡도 : `O(1)`
+- `put()`에 대한 최적의 시간복잡도 : `O(1)`
+- `Thread-safe`하지 않다. `Collections.synchronizedMap(Map map)`을 이용해서 동기화 처리가 가능하다.
+
+#### TreeMap
+
+- `Red-Black-tree`의 형태로 `Node`를 저장한다.
+- 각 `Node`는 `left`, `right`, `Entry<Key,Value>`로 이루어져있다.
+- `Red-Black-tree`는 Balanced Binary Search Tree이므로 key의 hash 값이 오름차순으로 정렬되어있다.
+
+- `get()`에 대한 평균 시간복잡도 : `O(logn)`
+- `put()`에 대한 평균 시간복잡도 : `O(logn)`
+- `Thread-safe`하지 않다. `Collections.synchronizedMap(Map map)`을 이용해서 동기화 처리가 가능하다.
+
+#### HashTable
+
+- 구버전의 HashMap이라고 볼 수 있다.
+- 보조 해시 함수를 사용하지 않기 때문에 `HashMap`에 비해 충돌이 많이 발생한다.
+- `Thread safe`하다.
+- 사용하지 말자.
+
+### Set
+
+- 순서가 없는 데이터 컬렉션이다.
+- 데이터 중복을 허용하지 않는다.
+- 내부적으로 `Map<E, Object>`을 사용해 key의 중복을 제거한다.
+
+#### HashSet
+
+- 내부적으로 `HashMap`을 사용한다.
+- null 삽입을 허용하지 않는다.
+
+- `add()`에 대한 평균 시간복잡도 : `O(1)`
+- `contains()`에 대한 평균 시간복잡도 : `O(1)`
+- `Thread-safe`하지 않다. `Collections.synchronizedSet(Set set)`을 이용해서 동기화 처리가 가능하다.
+
+#### LinkedHashSet
+
+- 내부적으로 `LinkedHashMap`을 사용한다.
+- 삽입 순서를 기억하고 있다.
+- `add()`에 대한 평균 시간복잡도 : `O(1)`
+- `contains()`에 대한 평균 시간복잡도 : `O(1)`
+- `Thread-safe`하지 않다. `Collections.synchronizedSet(Set set)`을 이용해서 동기화 처리가 가능하다.
+
+#### TreeSet
+
+- `Red-black-tree`의 형태로 이루어진 자료구조이다.
+- `Balanced Binary Search Tree`이므로 트리의 높이가 항상 `logN`을 유지한다.
+- 데이터가 정렬되어있으므로 범위 검색에 용이하다.
+
+- `add()`에 대한 평균 시간복잡도 : `O(logn)`
+- `contains()`에 대한 평균 시간복잡도 : `O(logn)`
+
+### Queue
+
+- 선입선출 구조의 컬렉션
+- `Queue`는 인터페이스이므로 `LinkedList`를 구현체로 사용한다.
+
+- `add()`에 대한 평균 시간복잡도 : `O(1)`
+- `poll()`에 대한 평균 시간복잡도 : `O(1)`
+
+#### Deque
+
+- 양방향 큐로 양쪽으로 데이터를 삽입,삭제 할수 있다.
+- `Deque`는 인터페이스이므로 `LinkedList`를 구현체로 사용한다.
+
+- `add()`에 대한 평균 시간복잡도 : `O(1)`
+- `poll()`에 대한 평균 시간복잡도 : `O(1)`
+
+#### PriorityQueue
+
+- 우선순위 큐로 우선순위가 제일 높은 객체가 맨 앞에 위치한다.
+- 우선순위 큐의 구현방식은 자유롭지만, 보통 `Heap` 자료구조의 구현방식을 따른다.
+- 즉, 내부 구조는 배열의 형태로 이루어져있다.
+
+- `add()`에 대한 평균 시간복잡도 : `O(logn)`
+- `poll()`에 대한 평균 시간복잡도 : `O(logn)`
+- `peek()`에 대한 평균 시간복잡도 : `O(1)`
 
 [뒤로](https://github.com/pjok1122/Interview_Question_for_Beginner)/[위로](#part-2-1-java)
 
